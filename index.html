@@ -2,94 +2,101 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Genie — おしん様専属AI</title>
 <style>
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font-family: Georgia, 'Noto Serif JP', serif; background: #0a0a0f; color: #e8e4d8; min-height: 100vh; display: flex; flex-direction: column; }
-#setup { display: flex; align-items: center; justify-content: center; min-height: 100vh; padding: 1.5rem; }
-.setup-box { width: 100%; max-width: 440px; }
-.setup-title { text-align: center; margin-bottom: 2rem; }
-.setup-title .label { font-size: 0.6rem; letter-spacing: 0.3em; color: #b8a87a; margin-bottom: 0.5rem; font-family: monospace; }
-.setup-title h1 { font-size: 2.2rem; color: #e8e4d8; letter-spacing: 0.05em; }
-.setup-title .sub { font-size: 0.78rem; color: #555; margin-top: 0.4rem; }
-.setup-card { background: #0f0f18; border: 1px solid #2a2a3a; padding: 1.5rem; border-radius: 3px; margin-bottom: 0.8rem; }
-.setup-card .card-label { font-size: 0.72rem; color: #b8a87a; letter-spacing: 0.12em; margin-bottom: 0.8rem; font-family: monospace; }
-.setup-card input { width: 100%; padding: 0.7rem 1rem; background: #0a0a0f; border: 1px solid #2a2a3a; color: #e8e4d8; font-size: 0.82rem; font-family: monospace; border-radius: 2px; outline: none; margin-bottom: 0.5rem; }
-.setup-card input:focus { border-color: #b8a87a; }
-.setup-card .optional { font-size: 0.7rem; color: #444; margin-bottom: 0.8rem; }
-.setup-card button { width: 100%; padding: 0.85rem; background: #b8a87a; color: #0a0a0f; border: none; border-radius: 2px; font-size: 0.85rem; font-weight: bold; cursor: pointer; letter-spacing: 0.08em; font-family: Georgia, serif; }
-.setup-note { font-size: 0.67rem; color: #333; text-align: center; margin-top: 1rem; line-height: 1.7; }
-#main { display: none; flex-direction: column; min-height: 100vh; }
-header { padding: 0.8rem 1rem; border-bottom: 1px solid #1a1a2a; background: #06060a; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-header .title-area .label { font-size: 0.55rem; letter-spacing: 0.22em; color: #b8a87a; font-family: monospace; }
-header .title-area h2 { font-size: 0.95rem; font-weight: bold; margin-top: 2px; }
-header .right { display: flex; align-items: center; gap: 0.5rem; }
-.status-dot { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 6px #4ade80; }
-.hdr-btn { background: transparent; border: 1px solid #1a1a2a; color: #555; padding: 0.25rem 0.6rem; font-size: 0.65rem; cursor: pointer; border-radius: 2px; font-family: monospace; }
-.hdr-btn.gold { border-color: #b8a87a; color: #b8a87a; }
-.ai-selector { display: flex; border-bottom: 1px solid #1a1a2a; background: #06060a; flex-shrink: 0; }
-.ai-btn { flex: 1; padding: 0.5rem; font-size: 0.7rem; border: none; background: transparent; color: #444; cursor: pointer; font-family: monospace; border-bottom: 2px solid transparent; transition: all 0.15s; }
-.ai-btn.active { color: #b8a87a; border-bottom-color: #b8a87a; }
-.ai-btn.claude { }
-.ai-btn.openai { }
-.ai-btn.auto { }
-#settingsPanel { display: none; background: #0d0d14; border-bottom: 1px solid #1a1a2a; padding: 0.7rem 1rem; flex-direction: column; gap: 0.5rem; }
-.setting-row { display: flex; align-items: center; justify-content: space-between; }
-.setting-row span { font-size: 0.72rem; color: #555; font-family: monospace; }
-.setting-row button { padding: 0.22rem 0.65rem; border: 1px solid #7f1d1d; background: transparent; color: #ef4444; font-size: 0.65rem; cursor: pointer; border-radius: 2px; font-family: monospace; }
-#messages { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.9rem; max-width: 680px; width: 100%; margin: 0 auto; }
-.msg-wrap { display: flex; flex-direction: column; gap: 0.28rem; }
-.msg-wrap.user { align-items: flex-end; }
-.msg-wrap.assistant { align-items: flex-start; }
-.msg-name { font-size: 0.55rem; letter-spacing: 0.15em; font-family: monospace; }
-.msg-wrap.user .msg-name { color: #444; }
-.msg-wrap.assistant .msg-name { color: #b8a87a; }
-.msg-wrap.assistant.openai-msg .msg-name { color: #74aa9c; }
-.msg-bubble { max-width: 86%; padding: 0.75rem 0.95rem; line-height: 1.8; font-size: 0.84rem; white-space: pre-wrap; border-radius: 2px; }
-.msg-wrap.user .msg-bubble { background: #1a1a2e; border: 1px solid #252540; }
-.msg-wrap.assistant .msg-bubble { background: #0d0d18; border-left: 2px solid #b8a87a; color: #d8d4c4; }
-.msg-wrap.assistant.openai-msg .msg-bubble { border-left-color: #74aa9c; }
-.msg-actions { display: flex; gap: 0.4rem; }
-.msg-actions button { padding: 0.22rem 0.65rem; border: 1px solid; background: transparent; font-size: 0.65rem; cursor: pointer; border-radius: 2px; font-family: monospace; }
-.preview-btn { border-color: #b8a87a; color: #b8a87a; }
-.dl-btn { border-color: #3a3a4a; color: #3a3a4a; }
-#typing { display: none; flex-direction: column; align-items: flex-start; gap: 0.28rem; }
-.typing-label { font-size: 0.55rem; letter-spacing: 0.15em; font-family: monospace; color: #b8a87a; }
-.typing-dots { padding: 0.75rem 0.95rem; background: #0d0d18; border-left: 2px solid #b8a87a; display: flex; gap: 5px; align-items: center; }
-.typing-dots span { width: 5px; height: 5px; border-radius: 50%; background: #b8a87a; display: inline-block; animation: fade 1.4s infinite; }
-.typing-dots span:nth-child(2) { animation-delay: 0.2s; }
-.typing-dots span:nth-child(3) { animation-delay: 0.4s; }
-@keyframes fade { 0%,100%{opacity:.12} 50%{opacity:1} }
-#quickBtns { padding: 0 1rem 0.4rem; max-width: 680px; width: 100%; margin: 0 auto; display: flex; gap: 0.3rem; flex-wrap: wrap; }
-#quickBtns button { padding: 0.2rem 0.55rem; border: 1px solid #1a1a2a; background: transparent; color: #444; font-size: 0.65rem; cursor: pointer; border-radius: 2px; font-family: inherit; }
-footer { padding: 0.7rem 1rem 0.85rem; border-top: 1px solid #111120; background: #06060a; flex-shrink: 0; }
-.input-row { max-width: 680px; margin: 0 auto; display: flex; gap: 0.5rem; }
-textarea { flex: 1; padding: 0.6rem 0.85rem; background: #0d0d14; border: 1px solid #1a1a2a; color: #e8e4d8; font-size: 0.84rem; font-family: inherit; resize: none; outline: none; border-radius: 2px; }
-textarea::placeholder { color: #2a2a3a; }
-#sendBtn { padding: 0.6rem 1rem; background: #b8a87a; color: #0a0a0f; border: none; border-radius: 2px; font-size: 0.78rem; font-weight: bold; cursor: pointer; font-family: monospace; white-space: nowrap; }
-#sendBtn:disabled { background: #111; color: #333; cursor: not-allowed; }
-#previewModal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.92); flex-direction: column; }
-#previewModal.show { display: flex; }
-.modal-header { background: #0d0d14; border-bottom: 1px solid #2a2a3a; padding: 0.7rem 1.1rem; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-.modal-header span { font-size: 0.72rem; letter-spacing: 0.12em; color: #b8a87a; font-family: monospace; }
-.modal-header div { display: flex; gap: 0.5rem; }
-.modal-header button { padding: 0.22rem 0.65rem; border: 1px solid; background: transparent; font-size: 0.65rem; cursor: pointer; border-radius: 2px; font-family: monospace; }
-.ph-dl { border-color: #b8a87a; color: #b8a87a; }
-.ph-cl { border-color: #555; color: #555; }
-#previewFrame { flex: 1; border: none; background: white; }
-#memoryModal { display: none; position: fixed; inset: 0; z-index: 100; background: rgba(0,0,0,0.92); flex-direction: column; }
-#memoryModal.show { display: flex; }
-#memoryList { flex: 1; overflow-y: auto; padding: 1rem; display: flex; flex-direction: column; gap: 0.6rem; max-width: 600px; width: 100%; margin: 0 auto; }
-.memory-item { background: #0f0f18; border: 1px solid #2a2a3a; border-left: 2px solid #b8a87a; padding: 0.7rem 0.9rem; border-radius: 2px; display: flex; justify-content: space-between; align-items: flex-start; gap: 0.5rem; }
-.mem-text { font-size: 0.8rem; color: #d8d4c4; line-height: 1.6; flex: 1; }
-.mem-meta { display: flex; flex-direction: column; align-items: flex-end; gap: 0.3rem; }
-.mem-date { font-size: 0.6rem; color: #444; font-family: monospace; white-space: nowrap; }
-.mem-del { background: transparent; border: 1px solid #3a1a1a; color: #666; font-size: 0.6rem; cursor: pointer; padding: 0.15rem 0.4rem; border-radius: 2px; font-family: monospace; }
-.mem-add { max-width: 600px; width: 100%; margin: 0 auto; padding: 0 1rem 1rem; display: flex; gap: 0.5rem; }
-.mem-add input { flex: 1; padding: 0.6rem 0.85rem; background: #0d0d14; border: 1px solid #2a2a3a; color: #e8e4d8; font-size: 0.8rem; font-family: inherit; outline: none; border-radius: 2px; }
-.mem-add button { padding: 0.6rem 1rem; background: #b8a87a; color: #0a0a0f; border: none; border-radius: 2px; font-size: 0.75rem; font-weight: bold; cursor: pointer; font-family: monospace; white-space: nowrap; }
-.empty-mem { color: #333; font-size: 0.8rem; text-align: center; padding: 2rem; }
+*{margin:0;padding:0;box-sizing:border-box;}
+html,body{width:100%;height:100%;overflow:hidden;}
+body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;background:#0a0a0f;color:#e8e4d8;display:flex;flex-direction:column;height:100dvh;}
+#setup{display:flex;align-items:center;justify-content:center;flex:1;padding:1.5rem;overflow-y:auto;}
+.setup-box{width:100%;max-width:420px;}
+.setup-title{text-align:center;margin-bottom:1.5rem;}
+.setup-title .label{font-size:0.6rem;letter-spacing:0.3em;color:#b8a87a;margin-bottom:0.4rem;font-family:monospace;}
+.setup-title h1{font-size:2rem;color:#e8e4d8;letter-spacing:0.05em;}
+.setup-title .sub{font-size:0.75rem;color:#555;margin-top:0.3rem;}
+.setup-card{background:#0f0f18;border:1px solid #2a2a3a;padding:1.2rem;border-radius:4px;margin-bottom:0.8rem;}
+.setup-card .card-label{font-size:0.68rem;color:#b8a87a;letter-spacing:0.1em;margin-bottom:0.6rem;font-family:monospace;}
+.setup-card input{width:100%;padding:0.65rem 0.9rem;background:#0a0a0f;border:1px solid #2a2a3a;color:#e8e4d8;font-size:0.8rem;font-family:monospace;border-radius:3px;outline:none;margin-bottom:0.4rem;}
+.setup-card input:focus{border-color:#b8a87a;}
+.setup-card .note{font-size:0.68rem;color:#444;}
+.setup-btn{width:100%;padding:0.85rem;background:#b8a87a;color:#0a0a0f;border:none;border-radius:3px;font-size:0.85rem;font-weight:bold;cursor:pointer;font-family:inherit;letter-spacing:0.05em;}
+.setup-footnote{font-size:0.65rem;color:#333;text-align:center;margin-top:0.8rem;line-height:1.7;}
+#main{display:none;flex-direction:column;height:100dvh;}
+header{padding:0.75rem 1rem;padding-top:max(0.75rem,env(safe-area-inset-top));background:#06060a;border-bottom:1px solid #1a1a2a;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.title-area .lbl{font-size:0.5rem;letter-spacing:0.2em;color:#b8a87a;font-family:monospace;}
+.title-area h2{font-size:0.9rem;font-weight:bold;}
+.title-area h2 span{color:#333;font-size:0.65rem;}
+.hdr-right{display:flex;align-items:center;gap:0.4rem;}
+.status-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;box-shadow:0 0 5px #4ade80;flex-shrink:0;}
+.hdr-btn{background:transparent;border:1px solid #1a1a2a;color:#555;padding:0.22rem 0.55rem;font-size:0.62rem;cursor:pointer;border-radius:2px;font-family:monospace;white-space:nowrap;}
+.hdr-btn.gold{border-color:#b8a87a;color:#b8a87a;}
+.ai-bar{display:flex;background:#06060a;border-bottom:1px solid #1a1a2a;flex-shrink:0;}
+.ai-tab{flex:1;padding:0.45rem;font-size:0.68rem;border:none;background:transparent;color:#444;cursor:pointer;font-family:monospace;border-bottom:2px solid transparent;transition:all 0.15s;}
+.ai-tab.active{color:#b8a87a;border-bottom-color:#b8a87a;}
+#settingsPanel{display:none;background:#0d0d14;border-bottom:1px solid #1a1a2a;padding:0.6rem 1rem;flex-direction:column;gap:0.4rem;flex-shrink:0;}
+.srow{display:flex;align-items:center;justify-content:space-between;}
+.srow span{font-size:0.68rem;color:#555;font-family:monospace;}
+.srow button{padding:0.2rem 0.6rem;border:1px solid #7f1d1d;background:transparent;color:#ef4444;font-size:0.62rem;cursor:pointer;border-radius:2px;font-family:monospace;}
+#messages{flex:1;overflow-y:auto;padding:0.9rem;display:flex;flex-direction:column;gap:0.8rem;-webkit-overflow-scrolling:touch;}
+.mwrap{display:flex;flex-direction:column;gap:0.25rem;}
+.mwrap.user{align-items:flex-end;}
+.mwrap.assistant{align-items:flex-start;}
+.mname{font-size:0.52rem;letter-spacing:0.12em;font-family:monospace;}
+.mwrap.user .mname{color:#444;}
+.mwrap.assistant .mname{color:#b8a87a;}
+.mwrap.assistant.gpt .mname{color:#74aa9c;}
+.mbubble{max-width:88%;padding:0.7rem 0.9rem;line-height:1.75;font-size:0.84rem;white-space:pre-wrap;border-radius:3px;word-break:break-word;}
+.mwrap.user .mbubble{background:#1a1a2e;border:1px solid #252540;}
+.mwrap.assistant .mbubble{background:#0d0d18;border-left:2px solid #b8a87a;color:#d8d4c4;}
+.mwrap.assistant.gpt .mbubble{border-left-color:#74aa9c;}
+.mbubble img{max-width:100%;border-radius:4px;margin-top:0.5rem;display:block;}
+.mactions{display:flex;gap:0.35rem;margin-top:0.2rem;}
+.mactions button{padding:0.2rem 0.6rem;border:1px solid;background:transparent;font-size:0.62rem;cursor:pointer;border-radius:2px;font-family:monospace;}
+.pbtn{border-color:#b8a87a;color:#b8a87a;}
+.dbtn{border-color:#3a3a4a;color:#3a3a4a;}
+#typing{display:none;flex-direction:column;align-items:flex-start;gap:0.25rem;}
+.tlabel{font-size:0.52rem;letter-spacing:0.12em;font-family:monospace;color:#b8a87a;}
+.tdots{padding:0.7rem 0.9rem;background:#0d0d18;border-left:2px solid #b8a87a;display:flex;gap:4px;align-items:center;border-radius:3px;}
+.tdots span{width:5px;height:5px;border-radius:50%;background:#b8a87a;display:inline-block;animation:fade 1.4s infinite;}
+.tdots span:nth-child(2){animation-delay:.2s;}
+.tdots span:nth-child(3){animation-delay:.4s;}
+@keyframes fade{0%,100%{opacity:.12}50%{opacity:1}}
+.imgprev-bar{padding:0.5rem 0.9rem;background:#0d0d14;border-top:1px solid #1a1a2a;display:none;gap:0.5rem;flex-wrap:wrap;align-items:center;}
+.imgprev-bar.show{display:flex;}
+.imgprev-item{position:relative;}
+.imgprev-item img{width:60px;height:60px;object-fit:cover;border-radius:4px;border:1px solid #2a2a3a;}
+.imgprev-item button{position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:#ef4444;border:none;color:white;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+footer{padding:0.6rem 0.9rem;padding-bottom:max(0.6rem,env(safe-area-inset-bottom));border-top:1px solid #111120;background:#06060a;flex-shrink:0;}
+.frow{display:flex;gap:0.4rem;align-items:flex-end;}
+.img-btn{padding:0.55rem 0.7rem;background:#0d0d14;border:1px solid #2a2a3a;border-radius:3px;color:#666;font-size:1rem;cursor:pointer;flex-shrink:0;line-height:1;}
+textarea{flex:1;padding:0.55rem 0.8rem;background:#0d0d14;border:1px solid #1a1a2a;color:#e8e4d8;font-size:0.84rem;font-family:inherit;resize:none;outline:none;border-radius:3px;max-height:120px;min-height:38px;-webkit-appearance:none;}
+textarea:focus{border-color:#b8a87a;}
+textarea::placeholder{color:#2a2a3a;}
+#sendBtn{padding:0.55rem 0.9rem;background:#b8a87a;color:#0a0a0f;border:none;border-radius:3px;font-size:0.78rem;font-weight:bold;cursor:pointer;font-family:monospace;white-space:nowrap;flex-shrink:0;}
+#sendBtn:disabled{background:#111;color:#333;cursor:not-allowed;}
+#previewModal{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.95);flex-direction:column;}
+#previewModal.show{display:flex;}
+#memoryModal{display:none;position:fixed;inset:0;z-index:100;background:rgba(0,0,0,0.95);flex-direction:column;}
+#memoryModal.show{display:flex;}
+.mhdr{background:#0d0d14;border-bottom:1px solid #2a2a3a;padding:0.65rem 1rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.mhdr span{font-size:0.68rem;letter-spacing:0.1em;color:#b8a87a;font-family:monospace;}
+.mhdr div{display:flex;gap:0.4rem;}
+.mhdr button{padding:0.2rem 0.6rem;border:1px solid;background:transparent;font-size:0.62rem;cursor:pointer;border-radius:2px;font-family:monospace;}
+.btn-dl{border-color:#b8a87a;color:#b8a87a;}
+.btn-cl{border-color:#555;color:#555;}
+#previewFrame{flex:1;border:none;background:white;}
+#memList{flex:1;overflow-y:auto;padding:0.9rem;display:flex;flex-direction:column;gap:0.5rem;}
+.memitem{background:#0f0f18;border:1px solid #2a2a3a;border-left:2px solid #b8a87a;padding:0.65rem 0.85rem;border-radius:3px;display:flex;justify-content:space-between;align-items:flex-start;gap:0.4rem;}
+.memtext{font-size:0.78rem;color:#d8d4c4;line-height:1.6;flex:1;}
+.memmeta{display:flex;flex-direction:column;align-items:flex-end;gap:0.25rem;flex-shrink:0;}
+.memdate{font-size:0.58rem;color:#444;font-family:monospace;}
+.memdel{background:transparent;border:1px solid #3a1a1a;color:#666;font-size:0.58rem;cursor:pointer;padding:0.12rem 0.35rem;border-radius:2px;font-family:monospace;}
+.memadd{padding:0.7rem 0.9rem;border-top:1px solid #1a1a2a;display:flex;gap:0.4rem;flex-shrink:0;}
+.memadd input{flex:1;padding:0.55rem 0.8rem;background:#0d0d14;border:1px solid #2a2a3a;color:#e8e4d8;font-size:0.78rem;font-family:inherit;outline:none;border-radius:3px;}
+.memadd button{padding:0.55rem 0.9rem;background:#b8a87a;color:#0a0a0f;border:none;border-radius:3px;font-size:0.72rem;font-weight:bold;cursor:pointer;font-family:monospace;white-space:nowrap;}
+.emptymem{color:#333;font-size:0.78rem;text-align:center;padding:2rem;}
+.quickbtns{padding:0 0.9rem 0.4rem;display:flex;gap:0.3rem;flex-wrap:wrap;flex-shrink:0;}
+.quickbtns button{padding:0.18rem 0.5rem;border:1px solid #1a1a2a;background:transparent;color:#444;font-size:0.62rem;cursor:pointer;border-radius:2px;font-family:inherit;}
 </style>
 </head>
 <body>
@@ -102,196 +109,193 @@ textarea::placeholder { color: #2a2a3a; }
     </div>
     <div class="setup-card">
       <div class="card-label">— ANTHROPIC API KEY（Claude）—</div>
-      <input type="password" id="claudeKeyInput" placeholder="sk-ant-api03-...">
+      <input type="password" id="ck" placeholder="sk-ant-api03-...">
     </div>
     <div class="setup-card">
-      <div class="card-label">— OPENAI API KEY（ChatGPT）— <span style="color:#444;font-size:0.65rem;">任意</span></div>
-      <input type="password" id="openaiKeyInput" placeholder="sk-proj-...">
-      <div class="optional">※ 入力しなくてもClaudeのみで使用できます</div>
+      <div class="card-label">— OPENAI API KEY（ChatGPT）— <span style="color:#444;font-size:0.62rem;">任意</span></div>
+      <input type="password" id="ok" placeholder="sk-proj-...">
+      <div class="note">※ 入力しなくてもClaudeのみで使用できます</div>
     </div>
     <div class="setup-card">
-      <button onclick="saveKeys()">ジーニーを召喚する</button>
+      <button class="setup-btn" onclick="saveKeys()">ジーニーを召喚する</button>
     </div>
-    <div class="setup-note">キーはブラウザのlocalStorageに保存されます。外部に送信されることはありません。</div>
+    <div class="setup-footnote">キーはこの端末のみに保存されます。外部送信はありません。</div>
   </div>
 </div>
 <div id="main">
   <header>
     <div class="title-area">
-      <div class="label">PERSONAL AI ASSISTANT</div>
-      <h2>Genie <span style="color:#3a3a4a;font-size:0.7rem;">— おしん様 専属</span></h2>
+      <div class="lbl">PERSONAL AI ASSISTANT</div>
+      <h2>Genie <span>— おしん様 専属</span></h2>
     </div>
-    <div class="right">
+    <div class="hdr-right">
       <div class="status-dot"></div>
-      <button class="hdr-btn gold" onclick="openMemory()">記憶 <span id="memCount">0</span></button>
+      <button class="hdr-btn gold" onclick="openMem()">記憶 <span id="mc">0</span></button>
       <button class="hdr-btn" onclick="toggleSettings()">設定</button>
     </div>
   </header>
-  <div class="ai-selector">
-    <button class="ai-btn auto active" onclick="setAI('auto')" id="btn-auto">🤖 自動選択</button>
-    <button class="ai-btn claude" onclick="setAI('claude')" id="btn-claude">⚡ Claude</button>
-    <button class="ai-btn openai" onclick="setAI('openai')" id="btn-openai">🧠 ChatGPT</button>
+  <div class="ai-bar">
+    <button class="ai-tab active" id="tab-auto" onclick="setAI('auto')">🤖 自動</button>
+    <button class="ai-tab" id="tab-claude" onclick="setAI('claude')">⚡ Claude</button>
+    <button class="ai-tab" id="tab-openai" onclick="setAI('openai')">🧠 ChatGPT</button>
   </div>
   <div id="settingsPanel">
-    <div class="setting-row">
-      <span id="claudeKeyDisplay"></span>
-      <button onclick="resetKeys()">キーをリセット</button>
-    </div>
-    <div class="setting-row">
-      <span id="openaiKeyDisplay"></span>
-    </div>
+    <div class="srow"><span id="ckd"></span><button onclick="resetKeys()">リセット</button></div>
+    <div class="srow"><span id="okd"></span></div>
   </div>
   <div id="messages">
-    <div class="msg-wrap assistant">
-      <div class="msg-name">GENIE</div>
-      <div class="msg-bubble">お待ちしておりました、おしん様。
+    <div class="mwrap assistant">
+      <div class="mname">GENIE</div>
+      <div class="mbubble">お待ちしておりました、おしん様。
 
-私はジーニー。ClaudeとChatGPT、両方のAIを使いこなし、おしん様専属のアシスタントとして最高のサービスを提供いたします。
+私はジーニー。Claude と ChatGPT を使いこなし、おしん様専属のアシスタントとして最高のサービスを提供いたします。
 
-「自動選択」ではタスクに応じて最適なAIを選択します。会話を通じておしん様のことを学び、記憶していきます。ご用件をお申し付けください。</div>
+画像も送れます。「覚えておいて：〇〇」で記憶します。ご用件をお申し付けください。</div>
     </div>
     <div id="typing">
-      <div class="typing-label" id="typingLabel">GENIE</div>
-      <div class="typing-dots"><span></span><span></span><span></span></div>
+      <div class="tlabel" id="tlabel">GENIE</div>
+      <div class="tdots"><span></span><span></span><span></span></div>
     </div>
   </div>
-  <div id="quickBtns">
-    <button onclick="quickSend('ToDoアプリを作って')">ToDoアプリ</button>
-    <button onclick="quickSend('習慣トラッカーを作って')">習慣トラッカー</button>
-    <button onclick="quickSend('私のことを分析して')">私を分析して</button>
-    <button onclick="quickSend('今日何をすべきか提案して')">今日の提案</button>
-    <button onclick="quickSend('ClaudeとChatGPT両方の意見を聞かせて')">両方の意見</button>
+  <div class="quickbtns">
+    <button onclick="qs('ToDoアプリを作って')">ToDoアプリ</button>
+    <button onclick="qs('習慣トラッカーを作って')">習慣トラッカー</button>
+    <button onclick="qs('私のことを分析して')">私を分析</button>
+    <button onclick="qs('今日の提案をして')">今日の提案</button>
+    <button onclick="qs('ClaudeとChatGPT両方の意見を聞かせて')">両方の意見</button>
   </div>
+  <div class="imgprev-bar" id="imgbar"></div>
   <footer>
-    <div class="input-row">
-      <textarea id="userInput" placeholder="ご用件をお申し付けください..." rows="2"></textarea>
-      <button id="sendBtn" onclick="sendMessage()">送信</button>
+    <div class="frow">
+      <button class="img-btn" onclick="document.getElementById('fi').click()">🖼️</button>
+      <input type="file" id="fi" accept="image/*" style="display:none" onchange="onImg(event)">
+      <textarea id="ui" placeholder="ご用件をお申し付けください..." rows="1" oninput="autoResize(this)" onkeydown="onKey(event)"></textarea>
+      <button id="sendBtn" onclick="send()">送信</button>
     </div>
   </footer>
 </div>
 <div id="previewModal">
-  <div class="modal-header">
+  <div class="mhdr">
     <span>— 完成品プレビュー —</span>
     <div>
-      <button class="ph-dl" onclick="downloadPreview()">HTMLで保存</button>
-      <button class="ph-cl" onclick="closePreview()">閉じる</button>
+      <button class="btn-dl" onclick="dlPreview()">HTMLで保存</button>
+      <button class="btn-cl" onclick="closePrev()">閉じる</button>
     </div>
   </div>
-  <iframe id="previewFrame"></iframe>
+  <iframe id="pf"></iframe>
 </div>
 <div id="memoryModal">
-  <div class="modal-header">
+  <div class="mhdr">
     <span>— ジーニーの記憶 —</span>
-    <button class="ph-cl" onclick="closeMemory()" style="padding:0.22rem 0.65rem;border:1px solid #555;background:transparent;color:#555;font-size:0.65rem;cursor:pointer;border-radius:2px;font-family:monospace;">閉じる</button>
+    <button class="btn-cl" onclick="closeMem()" style="padding:0.2rem 0.6rem;border:1px solid #555;background:transparent;color:#555;font-size:0.62rem;cursor:pointer;border-radius:2px;font-family:monospace;">閉じる</button>
   </div>
-  <div id="memoryList"></div>
-  <div class="mem-add">
-    <input type="text" id="memInput" placeholder="覚えさせたいことを入力...">
-    <button onclick="addMemoryManual()">記憶させる</button>
+  <div id="memList"></div>
+  <div class="memadd">
+    <input type="text" id="mi" placeholder="覚えさせたいことを入力...">
+    <button onclick="addMemMan()">記憶させる</button>
   </div>
 </div>
 <script>
-let claudeKey='',openaiKey='',history=[],loading=false,currentPreviewCode='',currentAI='auto';
-function getMemories(){try{return JSON.parse(localStorage.getItem('genie_memories')||'[]');}catch(e){return[];}}
-function saveMemories(m){localStorage.setItem('genie_memories',JSON.stringify(m));document.getElementById('memCount').textContent=m.length;}
-function addMemory(text){const m=getMemories();m.push({text,date:new Date().toLocaleDateString('ja-JP')});saveMemories(m);}
-function buildMemoryContext(){const m=getMemories();if(!m.length)return'';return'\n\n【おしん様の記憶・プロフィール】\n'+m.map(x=>'・'+x.text).join('\n');}
-const CLAUDE_SYSTEM=`あなたは「おしん様」専属のAIアシスタント、ジーニーです。ClaudeとChatGPT両方を使いこなす高性能AIです。クールで知的、かしこまった敬語。一人称は「私」、呼称は「おしん様」。絵文字不使用。会話からおしん様の情報を積極的に把握。重要情報は[MEMORY:内容]形式で返答に含める。HTMLアプリはhtmlコードブロックで囲む。HTML+CSS+JS all-in-oneで完全動作。おしん様が欲しいものを言えば即実行。`;
-const OPENAI_SYSTEM=`あなたは「おしん様」専属のAIアシスタント、ジーニー（ChatGPTモード）です。クールで知的、かしこまった敬語。一人称は「私」、呼称は「おしん様」。絵文字不使用。会話からおしん様の情報を積極的に把握。重要情報は[MEMORY:内容]形式で返答に含める。HTMLアプリはhtmlコードブロックで囲む。HTML+CSS+JS all-in-oneで完全動作。おしん様が欲しいものを言えば即実行。`;
-function setAI(ai){
-  currentAI=ai;
-  ['auto','claude','openai'].forEach(a=>{document.getElementById('btn-'+a).classList.toggle('active',a===ai);});
-}
+let ck='',ok='',hist=[],loading=false,prevCode='',ai='auto',imgs=[];
+const getMems=()=>{try{return JSON.parse(localStorage.getItem('gm')||'[]');}catch{return[];}};
+const saveMems=m=>{localStorage.setItem('gm',JSON.stringify(m));document.getElementById('mc').textContent=m.length;};
+const addMem=t=>{const m=getMems();m.push({t,d:new Date().toLocaleDateString('ja-JP')});saveMems(m);};
+const memCtx=()=>{const m=getMems();return m.length?'\n\n【おしん様の記憶】\n'+m.map(x=>'・'+x.t).join('\n'):'';};
+const CS=`あなたは「おしん様」専属AIアシスタント、ジーニーです。クールで知的、かしこまった敬語。一人称「私」、呼称「おしん様」。絵文字不使用。会話から重要情報を[MEMORY:内容]形式で返答に含める。HTMLアプリはhtmlコードブロックで囲みHTML+CSS+JS all-in-oneで完全動作。画像が送られたら内容を詳細に分析。おしん様の要望を即実行。`;
+const OS=`あなたは「おしん様」専属AIアシスタント、ジーニー（ChatGPTモード）です。クールで知的、かしこまった敬語。一人称「私」、呼称「おしん様」。絵文字不使用。会話から重要情報を[MEMORY:内容]形式で返答に含める。HTMLアプリはhtmlコードブロックで囲みHTML+CSS+JS all-in-oneで完全動作。おしん様の要望を即実行。`;
+function setAI(a){ai=a;['auto','claude','openai'].forEach(x=>document.getElementById('tab-'+x).classList.toggle('active',x===a));}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+function onKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
+function onImg(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{imgs.push(ev.target.result);renderImgBar();};r.readAsDataURL(f);e.target.value='';}
+function renderImgBar(){const bar=document.getElementById('imgbar');if(!imgs.length){bar.classList.remove('show');bar.innerHTML='';return;}bar.classList.add('show');bar.innerHTML=imgs.map((img,i)=>`<div class="imgprev-item"><img src="${img}"><button onclick="removeImg(${i})">×</button></div>`).join('');}
+function removeImg(i){imgs.splice(i,1);renderImgBar();}
 window.onload=()=>{
-  const ck=localStorage.getItem('oshin_claude_key');
-  const ok=localStorage.getItem('oshin_openai_key');
-  if(ck){claudeKey=ck;openaiKey=ok||'';showMain();}
-  document.getElementById('userInput').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();sendMessage();}});
-  document.getElementById('claudeKeyInput').addEventListener('keydown',e=>{if(e.key==='Enter')saveKeys();});
-  document.getElementById('memInput').addEventListener('keydown',e=>{if(e.key==='Enter')addMemoryManual();});
-  document.getElementById('memCount').textContent=getMemories().length;
+  const sk=localStorage.getItem('ogck'),so=localStorage.getItem('ogok');
+  if(sk){ck=sk;ok=so||'';showMain();}
+  document.getElementById('mi').addEventListener('keydown',e=>{if(e.key==='Enter')addMemMan();});
+  document.getElementById('mc').textContent=getMems().length;
 };
 function saveKeys(){
-  const ck=document.getElementById('claudeKeyInput').value.trim();
-  const ok=document.getElementById('openaiKeyInput').value.trim();
-  if(!ck.startsWith('sk-ant-')){alert('AnthropicのAPIキーは sk-ant- で始まります');return;}
-  localStorage.setItem('oshin_claude_key',ck);
-  if(ok)localStorage.setItem('oshin_openai_key',ok);
-  claudeKey=ck;openaiKey=ok;
-  showMain();
+  const k=document.getElementById('ck').value.trim(),o=document.getElementById('ok').value.trim();
+  if(!k.startsWith('sk-ant-')){alert('AnthropicキーはSK-ant-で始まります');return;}
+  localStorage.setItem('ogck',k);if(o)localStorage.setItem('ogok',o);
+  ck=k;ok=o;showMain();
 }
 function showMain(){
   document.getElementById('setup').style.display='none';
   document.getElementById('main').style.display='flex';
-  document.getElementById('claudeKeyDisplay').textContent='Claude: sk-ant-...'+claudeKey.slice(-6);
-  document.getElementById('openaiKeyDisplay').textContent=openaiKey?'ChatGPT: sk-proj-...'+openaiKey.slice(-6):'ChatGPT: 未設定';
-  if(!openaiKey){document.getElementById('btn-openai').style.opacity='0.4';}
+  document.getElementById('ckd').textContent='Claude: ...'+ck.slice(-6);
+  document.getElementById('okd').textContent=ok?'ChatGPT: ...'+ok.slice(-6):'ChatGPT: 未設定';
+  if(!ok)document.getElementById('tab-openai').style.opacity='0.4';
 }
-function resetKeys(){localStorage.removeItem('oshin_claude_key');localStorage.removeItem('oshin_openai_key');location.reload();}
+function resetKeys(){localStorage.removeItem('ogck');localStorage.removeItem('ogok');location.reload();}
 function toggleSettings(){const p=document.getElementById('settingsPanel');p.style.display=p.style.display==='flex'?'none':'flex';}
-function quickSend(t){document.getElementById('userInput').value=t;sendMessage();}
-function openMemory(){renderMemories();document.getElementById('memoryModal').classList.add('show');}
-function closeMemory(){document.getElementById('memoryModal').classList.remove('show');}
-function addMemoryManual(){const i=document.getElementById('memInput');const t=i.value.trim();if(!t)return;addMemory(t);i.value='';renderMemories();}
-function renderMemories(){const m=getMemories();const l=document.getElementById('memoryList');if(!m.length){l.innerHTML='<div class="empty-mem">まだ記憶がありません。</div>';return;}l.innerHTML=m.map((x,i)=>`<div class="memory-item"><div class="mem-text">${x.text}</div><div class="mem-meta"><div class="mem-date">${x.date}</div><button class="mem-del" onclick="deleteMemory(${i})">削除</button></div></div>`).join('');}
-function deleteMemory(i){const m=getMemories();m.splice(i,1);saveMemories(m);renderMemories();}
-function addMessage(text,role,code,aiType){
+function qs(t){document.getElementById('ui').value=t;send();}
+function openMem(){renderMems();document.getElementById('memoryModal').classList.add('show');}
+function closeMem(){document.getElementById('memoryModal').classList.remove('show');}
+function addMemMan(){const i=document.getElementById('mi');const t=i.value.trim();if(!t)return;addMem(t);i.value='';renderMems();}
+function renderMems(){const m=getMems(),l=document.getElementById('memList');if(!m.length){l.innerHTML='<div class="emptymem">まだ記憶がありません。</div>';return;}l.innerHTML=m.map((x,i)=>`<div class="memitem"><div class="memtext">${x.t}</div><div class="memmeta"><div class="memdate">${x.d}</div><button class="memdel" onclick="delMem(${i})">削除</button></div></div>`).join('');}
+function delMem(i){const m=getMems();m.splice(i,1);saveMems(m);renderMems();}
+function addMsg(text,role,code,aiType,imgSrc){
   const typing=document.getElementById('typing'),msgs=document.getElementById('messages');
-  const wrap=document.createElement('div');
-  wrap.className=`msg-wrap ${role}${aiType==='openai'?' openai-msg':''}`;
-  const name=document.createElement('div');name.className='msg-name';
+  const wrap=document.createElement('div');wrap.className=`mwrap ${role}${aiType==='openai'?' gpt':''}`;
+  const name=document.createElement('div');name.className='mname';
   name.textContent=role==='user'?'おしん様':aiType==='openai'?'GENIE / ChatGPT':'GENIE / Claude';
   wrap.appendChild(name);
-  const bubble=document.createElement('div');bubble.className='msg-bubble';bubble.textContent=text;wrap.appendChild(bubble);
-  if(code){const a=document.createElement('div');a.className='msg-actions';const p=document.createElement('button');p.className='preview-btn';p.textContent='プレビュー';p.onclick=()=>showPreview(code);const d=document.createElement('button');d.className='dl-btn';d.textContent='HTMLで保存';d.onclick=()=>downloadCode(code);a.appendChild(p);a.appendChild(d);wrap.appendChild(a);}
+  const bubble=document.createElement('div');bubble.className='mbubble';
+  bubble.textContent=text;
+  if(imgSrc){const img=document.createElement('img');img.src=imgSrc;bubble.appendChild(img);}
+  wrap.appendChild(bubble);
+  if(code){const a=document.createElement('div');a.className='mactions';const p=document.createElement('button');p.className='pbtn';p.textContent='プレビュー';p.onclick=()=>showPrev(code);const d=document.createElement('button');d.className='dbtn';d.textContent='HTMLで保存';d.onclick=()=>dlCode(code);a.appendChild(p);a.appendChild(d);wrap.appendChild(a);}
   msgs.insertBefore(wrap,typing);msgs.scrollTop=msgs.scrollHeight;
 }
-function decideAI(msg){
-  if(currentAI!=='auto')return currentAI;
-  if(!openaiKey)return'claude';
-  const gptKeywords=['chatgpt','gpt','openai','別の意見','比較','両方'];
-  if(gptKeywords.some(k=>msg.toLowerCase().includes(k)))return'openai';
-  return'claude';
-}
-async function sendMessage(){
-  const input=document.getElementById('userInput'),btn=document.getElementById('sendBtn'),msg=input.value.trim();
-  if(!msg||loading)return;
-  input.value='';loading=true;btn.disabled=true;
-  addMessage(msg,'user','',null);
-  const newHistory=[...history,{role:'user',content:msg}];history=newHistory;
-  const typing=document.getElementById('typing');
+function decideAI(msg){if(ai!=='auto')return ai;if(!ok)return'claude';const kw=['chatgpt','gpt','openai','別の意見','両方'];if(kw.some(k=>msg.toLowerCase().includes(k)))return'openai';return'claude';}
+async function send(){
+  const input=document.getElementById('ui'),btn=document.getElementById('sendBtn'),msg=input.value.trim();
+  if((!msg&&!imgs.length)||loading)return;
+  const curImgs=[...imgs];
+  input.value='';input.style.height='auto';imgs=[];renderImgBar();
+  loading=true;btn.disabled=true;
+  addMsg(msg,'user','',null,curImgs[0]||null);
   const aiType=decideAI(msg);
-  document.getElementById('typingLabel').textContent=aiType==='openai'?'GENIE / ChatGPT...':'GENIE / Claude...';
-  typing.style.display='flex';
+  document.getElementById('tlabel').textContent=aiType==='openai'?'GENIE / ChatGPT...':'GENIE / Claude...';
+  document.getElementById('typing').style.display='flex';
   document.getElementById('messages').scrollTop=999999;
-  const memCtx=buildMemoryContext();
+  const mc=memCtx();
   try{
     let reply='';
-    if(aiType==='openai'&&openaiKey){
-      const res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+openaiKey},body:JSON.stringify({model:'gpt-4o-mini',max_tokens:4000,messages:[{role:'system',content:OPENAI_SYSTEM+memCtx},...newHistory]})});
-      if(!res.ok){const err=await res.json().catch(()=>({}));throw new Error(err.error?.message||`HTTP ${res.status}`);}
+    if(aiType==='openai'&&ok){
+      const omsg=[{role:'system',content:OS+mc},...hist];
+      if(msg)omsg.push({role:'user',content:msg});
+      const res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+ok},body:JSON.stringify({model:'gpt-4o-mini',max_tokens:4000,messages:omsg})});
+      if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
       const data=await res.json();reply=data.choices?.[0]?.message?.content||'';
+      hist.push({role:'user',content:msg},{role:'assistant',content:reply});
     }else{
-      const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':claudeKey,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:4000,system:CLAUDE_SYSTEM+memCtx,messages:newHistory})});
-      if(!res.ok){const err=await res.json().catch(()=>({}));throw new Error(err.error?.message||`HTTP ${res.status}`);}
+      const content=[];
+      if(curImgs.length){curImgs.forEach(img=>{content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:img.split(',')[1]}});});}
+      if(msg)content.push({type:'text',text:msg});
+      const cmsg=[...hist,{role:'user',content:content.length===1&&content[0].type==='text'?msg:content}];
+      const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ck,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:4000,system:CS+mc,messages:cmsg})});
+      if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
       const data=await res.json();reply=data.content?.map(b=>b.text||'').join('')||'';
+      hist.push({role:'user',content:msg||'[画像]'},{role:'assistant',content:reply});
     }
-    typing.style.display='none';
-    history.push({role:'assistant',content:reply});
-    const memMatches=reply.match(/\[MEMORY:([^\]]+)\]/g);
-    if(memMatches)memMatches.forEach(m=>{const t=m.replace('[MEMORY:','').replace(']','').trim();if(t)addMemory(t);});
-    const codeMatch=reply.match(/```html\n?([\s\S]*?)```/);
-    const displayText=reply.replace(/```html[\s\S]*?```/g,'').replace(/\[MEMORY:[^\]]+\]/g,'').trim();
-    const code=codeMatch?.[1]?.trim()||'';
-    addMessage(displayText,'assistant',code,aiType);
-    if(code){currentPreviewCode=code;showPreview(code);}
-  }catch(e){typing.style.display='none';addMessage(`申し訳ございません。エラーが発生いたしました。\n\n${e.message}`,'assistant','',aiType);}
+    document.getElementById('typing').style.display='none';
+    const mms=reply.match(/\[MEMORY:([^\]]+)\]/g);
+    if(mms)mms.forEach(m=>{const t=m.replace('[MEMORY:','').replace(']','').trim();if(t)addMem(t);});
+    const cm=reply.match(/```html\n?([\s\S]*?)```/);
+    const dt=reply.replace(/```html[\s\S]*?```/g,'').replace(/\[MEMORY:[^\]]+\]/g,'').trim();
+    const code=cm?.[1]?.trim()||'';
+    addMsg(dt,'assistant',code,aiType,null);
+    if(code){prevCode=code;showPrev(code);}
+  }catch(e){document.getElementById('typing').style.display='none';addMsg(`申し訳ございません。エラーが発生いたしました。\n\n${e.message}`,'assistant','',aiType,null);}
   loading=false;btn.disabled=false;
 }
-function showPreview(code){currentPreviewCode=code;document.getElementById('previewFrame').srcdoc=code;document.getElementById('previewModal').classList.add('show');}
-function closePreview(){document.getElementById('previewModal').classList.remove('show');}
-function downloadPreview(){downloadCode(currentPreviewCode);}
-function downloadCode(code){const blob=new Blob([code],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='oshin_app.html';a.click();}
+function showPrev(code){prevCode=code;document.getElementById('pf').srcdoc=code;document.getElementById('previewModal').classList.add('show');}
+function closePrev(){document.getElementById('previewModal').classList.remove('show');}
+function dlPreview(){dlCode(prevCode);}
+function dlCode(code){const b=new Blob([code],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='oshin_app.html';a.click();}
 </script>
 </body>
 </html>
