@@ -260,4 +260,246 @@ textarea::placeholder{color:#2a2a3a;}
   </div>
   <div class="deploy-content">
     <div class="deploy-status" id="deployStatus">準備中...</div>
-    <div class="deploy-progress"><div class​​​​​​​​​​​​​​​​
+    <div class="deploy-progress"><div class="deploy-progress-bar" id="deployBar"></div></div>
+    <div id="deployedApps"></div>
+  </div>
+</div>
+
+<script>
+let ck='',ok='',gk='',loading=false,prevCode='',ai='auto',imgs=[];
+let sessions=[],currentSessionId=null;
+const GITHUB_USER='sansan2103-a11y';
+const GITHUB_REPO='genie-apps';
+
+function getSessions(){try{return JSON.parse(localStorage.getItem('gs')||'[]');}catch{return[];}}
+function saveSessions(s){localStorage.setItem('gs',JSON.stringify(s));}
+function getDeployedApps(){try{return JSON.parse(localStorage.getItem('gda')||'[]');}catch{return[];}}
+function saveDeployedApps(a){localStorage.setItem('gda',JSON.stringify(a));}
+
+function newChat(){
+  const id='s'+Date.now();
+  const s={id,title:'新しい会話',messages:[],hist:[],created:Date.now()};
+  sessions.unshift(s);saveSessions(sessions);
+  currentSessionId=id;renderSessions();clearMessages();closeSidebar();
+}
+function loadSession(id){
+  const s=sessions.find(x=>x.id===id);if(!s)return;
+  currentSessionId=id;renderSessions();clearMessages();
+  s.messages.forEach(m=>restoreMsg(m));closeSidebar();
+}
+function deleteSession(id){
+  sessions=sessions.filter(x=>x.id!==id);saveSessions(sessions);
+  if(currentSessionId===id){currentSessionId=null;clearMessages();}
+  renderSessions();
+}
+function getCurrentSession(){return sessions.find(x=>x.id===currentSessionId);}
+function renderSessions(){
+  const list=document.getElementById('sessionsList');
+  list.innerHTML=sessions.length?sessions.map(s=>`
+    <div class="session-item${s.id===currentSessionId?' active':''}" onclick="loadSession('${s.id}')">
+      <div class="session-title">${s.title}</div>
+      <button class="session-del" onclick="event.stopPropagation();deleteSession('${s.id}')">✕</button>
+    </div>`).join(''):'<div style="padding:1rem;font-size:0.7rem;color:#333;text-align:center;">会話履歴なし</div>';
+}
+function clearMessages(){
+  const msgs=document.getElementById('messages'),typing=document.getElementById('typing');
+  msgs.innerHTML='';msgs.appendChild(typing);
+}
+function restoreMsg(m){
+  const typing=document.getElementById('typing'),msgs=document.getElementById('messages');
+  const wrap=document.createElement('div');wrap.className=`mwrap ${m.role}${m.aiType==='openai'?' gpt':''}`;
+  const name=document.createElement('div');name.className='mname';
+  name.textContent=m.role==='user'?'おしん様':m.aiType==='openai'?'GENIE / ChatGPT':'GENIE / Claude';
+  wrap.appendChild(name);
+  const bubble=document.createElement('div');bubble.className='mbubble';bubble.textContent=m.text;
+  if(m.img){const img=document.createElement('img');img.src=m.img;bubble.appendChild(img);}
+  wrap.appendChild(bubble);
+  if(m.code)addCodeActions(wrap,m.code);
+  msgs.insertBefore(wrap,typing);
+}
+
+function toggleSidebar(){
+  const sb=document.getElementById('sidebar'),ov=document.getElementById('overlay');
+  if(sb.classList.contains('open')){sb.classList.remove('open');ov.classList.remove('show');}
+  else{sb.classList.add('open');ov.classList.add('show');}
+}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
+
+const getMems=()=>{try{return JSON.parse(localStorage.getItem('gm')||'[]');}catch{return[];}};
+const saveMems=m=>{localStorage.setItem('gm',JSON.stringify(m));document.getElementById('mc').textContent=m.length;};
+const addMem=t=>{const m=getMems();m.push({t,d:new Date().toLocaleDateString('ja-JP')});saveMems(m);};
+const memCtx=()=>{const m=getMems();return m.length?'\n\n【おしん様の記憶】\n'+m.map(x=>'・'+x.t).join('\n'):'';};
+
+const CS=`あなたは「おしん様」専属AIアシスタント、ジーニーです。クールで知的、かしこまった敬語。一人称「私」、呼称「おしん様」。絵文字不使用。会話から重要情報を[MEMORY:内容]形式で返答に含める。HTMLアプリはhtmlコードブロックで囲みHTML+CSS+JS all-in-oneで完全動作。画像が送られたら詳細に分析。おしん様の要望を即実行。`;
+const OS=`あなたは「おしん様」専属AIアシスタント、ジーニー（ChatGPTモード）です。クールで知的、かしこまった敬語。一人称「私」、呼称「おしん様」。絵文字不使用。会話から重要情報を[MEMORY:内容]形式で返答に含める。HTMLアプリはhtmlコードブロックで囲みHTML+CSS+JS all-in-oneで完全動作。おしん様の要望を即実行。`;
+
+function setAI(a){ai=a;['auto','claude','openai'].forEach(x=>document.getElementById('tab-'+x).classList.toggle('active',x===a));}
+function decideAI(msg){if(ai!=='auto')return ai;if(!ok)return'claude';const kw=['chatgpt','gpt','openai','別の意見','両方'];if(kw.some(k=>msg.toLowerCase().includes(k)))return'openai';return'claude';}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+function onKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
+function onImg(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{imgs.push(ev.target.result);renderImgBar();};r.readAsDataURL(f);e.target.value='';}
+function renderImgBar(){const bar=document.getElementById('imgbar');if(!imgs.length){bar.classList.remove('show');bar.innerHTML='';return;}bar.classList.add('show');bar.innerHTML=imgs.map((img,i)=>`<div class="imgprev-item"><img src="${img}"><button onclick="removeImg(${i})">×</button></div>`).join('');}
+function removeImg(i){imgs.splice(i,1);renderImgBar();}
+function qs(t){document.getElementById('ui').value=t;send();}
+
+window.onload=()=>{
+  const sk=localStorage.getItem('ogck'),so=localStorage.getItem('ogok'),sg=localStorage.getItem('oggk');
+  if(sk){ck=sk;ok=so||'';gk=sg||'';showMain();}
+  document.getElementById('mi').addEventListener('keydown',e=>{if(e.key==='Enter')addMemMan();});
+  document.getElementById('mc').textContent=getMems().length;
+  sessions=getSessions();renderSessions();
+};
+
+function saveKeys(){
+  const k=document.getElementById('ck').value.trim(),o=document.getElementById('ok').value.trim(),g=document.getElementById('gk').value.trim();
+  if(!k.startsWith('sk-ant-')){alert('AnthropicキーはSK-ant-で始まります');return;}
+  localStorage.setItem('ogck',k);
+  if(o)localStorage.setItem('ogok',o);
+  if(g)localStorage.setItem('oggk',g);
+  ck=k;ok=o;gk=g;showMain();
+}
+function showMain(){
+  document.getElementById('setup').style.display='none';
+  document.getElementById('main').style.display='flex';
+  document.getElementById('ckd').textContent='Claude: ...'+ck.slice(-6);
+  document.getElementById('okd').textContent=ok?'ChatGPT: ...'+ok.slice(-6):'ChatGPT: 未設定';
+  document.getElementById('gkd').textContent=gk?'GitHub: ...'+gk.slice(-6):'GitHub: 未設定';
+  if(!ok)document.getElementById('tab-openai').style.opacity='0.4';
+  sessions=getSessions();renderSessions();
+}
+function resetKeys(){localStorage.removeItem('ogck');localStorage.removeItem('ogok');localStorage.removeItem('oggk');location.reload();}
+function toggleSettings(){const p=document.getElementById('settingsPanel');p.style.display=p.style.display==='flex'?'none':'flex';}
+function openMem(){renderMems();document.getElementById('memoryModal').classList.add('show');}
+function closeMem(){document.getElementById('memoryModal').classList.remove('show');}
+function addMemMan(){const i=document.getElementById('mi');const t=i.value.trim();if(!t)return;addMem(t);i.value='';renderMems();}
+function renderMems(){const m=getMems(),l=document.getElementById('memList');if(!m.length){l.innerHTML='<div class="emptymem">まだ記憶がありません。</div>';return;}l.innerHTML=m.map((x,i)=>`<div class="memitem"><div class="memtext">${x.t}</div><div class="memmeta"><div class="memdate">${x.d}</div><button class="memdel" onclick="delMem(${i})">削除</button></div></div>`).join('');}
+function delMem(i){const m=getMems();m.splice(i,1);saveMems(m);renderMems();}
+
+// DEPLOY
+async function deployCode(code,appName){
+  if(!gk){alert('GitHubトークンが設定されていません。設定画面から入力してください。');return;}
+  document.getElementById('deployModal').classList.add('show');
+  const status=document.getElementById('deployStatus');
+  const bar=document.getElementById('deployBar');
+  const filename=`${appName||'app'}-${Date.now()}.html`;
+  status.textContent='GitHubにアップロード中...';bar.style.width='30%';
+  try{
+    const content=btoa(unescape(encodeURIComponent(code)));
+    const res=await fetch(`https://api.github.com/repos/${GITHUB_USER}/${GITHUB_REPO}/contents/${filename}`,{
+      method:'PUT',
+      headers:{'Authorization':`token ${gk}`,'Content-Type':'application/json'},
+      body:JSON.stringify({message:`Deploy ${filename}`,content})
+    });
+    if(!res.ok){const e=await res.json();throw new Error(e.message||'Upload failed');}
+    bar.style.width='70%';
+    status.textContent='GitHub Pagesの反映を待っています...';
+    await new Promise(r=>setTimeout(r,3000));
+    bar.style.width='100%';
+    const url=`https://${GITHUB_USER}.github.io/${GITHUB_REPO}/${filename}`;
+    status.innerHTML=`✅ デプロイ完了！\n\n<span class="deploy-url">${url}</span>`;
+    const apps=getDeployedApps();
+    apps.unshift({name:appName||filename,url,date:new Date().toLocaleDateString('ja-JP')});
+    saveDeployedApps(apps);
+    renderDeployedApps();
+  }catch(e){status.textContent=`❌ エラー: ${e.message}`;}
+}
+
+function deployCurrentCode(){if(prevCode)deployCode(prevCode,'app');}
+
+function openDeploy(){renderDeployedApps();document.getElementById('deployModal').classList.add('show');}
+function closeDeployModal(){document.getElementById('deployModal').classList.remove('show');}
+function renderDeployedApps(){
+  const apps=getDeployedApps();
+  const el=document.getElementById('deployedApps');
+  if(!apps.length){el.innerHTML='<div style="color:#333;font-size:0.75rem;text-align:center;padding:1rem;">まだデプロイしたアプリはありません</div>';return;}
+  el.innerHTML='<div style="font-size:0.65rem;color:#b8a87a;font-family:monospace;margin-bottom:0.5rem;">— デプロイ済みアプリ —</div>'+
+  apps.map(a=>`<div style="background:#0f0f18;border:1px solid #2a2a3a;padding:0.7rem;border-radius:3px;margin-bottom:0.4rem;">
+    <div style="font-size:0.78rem;color:#e8e4d8;margin-bottom:0.3rem;">${a.name}</div>
+    <a href="${a.url}" target="_blank" style="font-size:0.65rem;color:#4ade80;font-family:monospace;word-break:break-all;">${a.url}</a>
+    <div style="font-size:0.58rem;color:#444;margin-top:0.2rem;">${a.date}</div>
+  </div>`).join('');
+}
+
+function addCodeActions(wrap,code){
+  const a=document.createElement('div');a.className='mactions';
+  const p=document.createElement('button');p.className='pbtn';p.textContent='プレビュー';p.onclick=()=>showPrev(code);
+  const dep=document.createElement('button');dep.className='deploy-btn';dep.textContent='🚀 デプロイ';dep.onclick=()=>deployCode(code,'app');
+  const d=document.createElement('button');d.className='dbtn';d.textContent='HTMLで保存';d.onclick=()=>dlCode(code);
+  a.appendChild(p);a.appendChild(dep);a.appendChild(d);wrap.appendChild(a);
+}
+
+function addMsg(text,role,code,aiType,imgSrc,save=true){
+  const typing=document.getElementById('typing'),msgs=document.getElementById('messages');
+  const wrap=document.createElement('div');wrap.className=`mwrap ${role}${aiType==='openai'?' gpt':''}`;
+  const name=document.createElement('div');name.className='mname';
+  name.textContent=role==='user'?'おしん様':aiType==='openai'?'GENIE / ChatGPT':'GENIE / Claude';
+  wrap.appendChild(name);
+  const bubble=document.createElement('div');bubble.className='mbubble';bubble.textContent=text;
+  if(imgSrc){const img=document.createElement('img');img.src=imgSrc;bubble.appendChild(img);}
+  wrap.appendChild(bubble);
+  if(code)addCodeActions(wrap,code);
+  msgs.insertBefore(wrap,typing);msgs.scrollTop=msgs.scrollHeight;
+  if(save){
+    let s=getCurrentSession();
+    if(!s){newChat();s=getCurrentSession();}
+    if(!s.messages)s.messages=[];
+    s.messages.push({role,text,code,aiType,img:imgSrc});
+    if(s.messages.length===1&&role==='user')s.title=text.substring(0,20)||(imgSrc?'画像の会話':'新しい会話');
+    saveSessions(sessions);renderSessions();
+  }
+}
+
+async function send(){
+  const input=document.getElementById('ui'),btn=document.getElementById('sendBtn'),msg=input.value.trim();
+  if((!msg&&!imgs.length)||loading)return;
+  if(!currentSessionId)newChat();
+  const curImgs=[...imgs];
+  input.value='';input.style.height='auto';imgs=[];renderImgBar();
+  loading=true;btn.disabled=true;
+  addMsg(msg,'user','',null,curImgs[0]||null);
+  const aiType=decideAI(msg);
+  document.getElementById('tlabel').textContent=aiType==='openai'?'GENIE / ChatGPT...':'GENIE / Claude...';
+  document.getElementById('typing').style.display='flex';
+  document.getElementById('messages').scrollTop=999999;
+  const mc=memCtx();
+  const s=getCurrentSession();
+  const hist=s?s.hist||[]:[];
+  try{
+    let reply='';
+    if(aiType==='openai'&&ok){
+      const omsg=[{role:'system',content:OS+mc},...hist];
+      if(msg)omsg.push({role:'user',content:msg});
+      const res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+ok},body:JSON.stringify({model:'gpt-4o-mini',max_tokens:4000,messages:omsg})});
+      if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
+      const data=await res.json();reply=data.choices?.[0]?.message?.content||'';
+      hist.push({role:'user',content:msg},{role:'assistant',content:reply});
+    }else{
+      const content=[];
+      if(curImgs.length)curImgs.forEach(img=>content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:img.split(',')[1]}}));
+      if(msg)content.push({type:'text',text:msg});
+      const cmsg=[...hist,{role:'user',content:content.length===1&&content[0].type==='text'?msg:content}];
+      const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ck,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:4000,system:CS+mc,messages:cmsg})});
+      if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
+      const data=await res.json();reply=data.content?.map(b=>b.text||'').join('')||'';
+      hist.push({role:'user',content:msg||'[画像]'},{role:'assistant',content:reply});
+    }
+    if(s)s.hist=hist;saveSessions(sessions);
+    document.getElementById('typing').style.display='none';
+    const mms=reply.match(/\[MEMORY:([^\]]+)\]/g);
+    if(mms)mms.forEach(m=>{const t=m.replace('[MEMORY:','').replace(']','').trim();if(t)addMem(t);});
+    const cm=reply.match(/```html\n?([\s\S]*?)```/);
+    const dt=reply.replace(/```html[\s\S]*?```/g,'').replace(/\[MEMORY:[^\]]+\]/g,'').trim();
+    const code=cm?.[1]?.trim()||'';
+    addMsg(dt,'assistant',code,aiType,null);
+    if(code){prevCode=code;showPrev(code);}
+  }catch(e){document.getElementById('typing').style.display='none';addMsg(`申し訳ございません。エラーが発生いたしました。\n\n${e.message}`,'assistant','',aiType,null);}
+  loading=false;btn.disabled=false;
+}
+
+function showPrev(code){prevCode=code;document.getElementById('pf').srcdoc=code;document.getElementById('previewModal').classList.add('show');}
+function closePrev(){document.getElementById('previewModal').classList.remove('show');}
+function dlPreview(){dlCode(prevCode);}
+function dlCode(code){const b=new Blob([code],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='oshin_app.html';a.click();}
+</script>
+</body>
+</html>
