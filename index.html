@@ -23,115 +23,135 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;bac
 .setup-footnote{font-size:0.65rem;color:#333;text-align:center;margin-top:0.8rem;line-height:1.7;}
 #main{display:none;flex-direction:row;height:100dvh;overflow:hidden;}
 #sidebar{width:260px;background:#06060a;border-right:1px solid #1a1a2a;display:flex;flex-direction:column;flex-shrink:0;transition:transform 0.25s ease;}
-.sidebar-header{padding:0.9rem 1rem;border-bottom:1px solid #1a1a2a;display:flex;align-items:center;justify-content:space-between;}
+.sidebar-header{padding:0.8rem 1rem;border-bottom:1px solid #1a1a2a;display:flex;align-items:center;justify-content:space-between;}
 .sidebar-header .logo{font-size:0.85rem;font-weight:bold;color:#e8e4d8;}
 .sidebar-header .logo span{color:#b8a87a;}
-.new-chat-btn{width:100%;padding:0.6rem;background:#0f0f18;border:1px solid #2a2a3a;color:#b8a87a;border-radius:3px;font-size:0.72rem;cursor:pointer;font-family:monospace;letter-spacing:0.05em;margin:0.7rem 0;}
+.sidebar-section{padding:0.5rem 0.7rem 0.3rem;font-size:0.55rem;letter-spacing:0.15em;color:#444;font-family:monospace;}
+.new-btn{width:100%;padding:0.5rem;background:#0f0f18;border:1px solid #2a2a3a;color:#b8a87a;border-radius:3px;font-size:0.68rem;cursor:pointer;font-family:monospace;margin-bottom:0.4rem;}
+.proj-item{padding:0.55rem 0.7rem;border-radius:3px;cursor:pointer;font-size:0.72rem;color:#666;margin-bottom:0.2rem;display:flex;align-items:center;justify-content:space-between;gap:0.3rem;}
+.proj-item:hover{background:#0f0f18;color:#aaa;}
+.proj-item.active{background:#1a1a2e;color:#e8e4d8;border-left:2px solid #b8a87a;}
+.proj-item .proj-icon{font-size:0.8rem;flex-shrink:0;}
+.proj-item .proj-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.proj-item .proj-del{background:transparent;border:none;color:#333;font-size:0.65rem;cursor:pointer;padding:0.1rem 0.25rem;}
+.proj-item .proj-del:hover{color:#ef4444;}
 .sessions-list{flex:1;overflow-y:auto;padding:0 0.7rem;}
-.session-item{padding:0.6rem 0.7rem;border-radius:3px;cursor:pointer;font-size:0.75rem;color:#666;margin-bottom:0.25rem;display:flex;align-items:center;justify-content:space-between;gap:0.4rem;}
+.session-item{padding:0.5rem 0.65rem;border-radius:3px;cursor:pointer;font-size:0.7rem;color:#555;margin-bottom:0.2rem;display:flex;align-items:center;justify-content:space-between;gap:0.3rem;}
 .session-item:hover{background:#0f0f18;color:#aaa;}
 .session-item.active{background:#1a1a2e;color:#e8e4d8;border-left:2px solid #b8a87a;}
 .session-title{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.session-del{background:transparent;border:none;color:#333;font-size:0.7rem;cursor:pointer;padding:0.1rem 0.3rem;}
+.session-del{background:transparent;border:none;color:#333;font-size:0.65rem;cursor:pointer;padding:0.1rem 0.25rem;}
 .session-del:hover{color:#ef4444;}
-.sidebar-footer{padding:0.7rem;border-top:1px solid #1a1a2a;display:flex;flex-direction:column;gap:0.4rem;}
-.side-btn{width:100%;padding:0.5rem;background:transparent;border:1px solid #2a2a3a;color:#666;border-radius:3px;font-size:0.68rem;cursor:pointer;font-family:monospace;}
+.sidebar-footer{padding:0.7rem;border-top:1px solid #1a1a2a;display:flex;flex-direction:column;gap:0.35rem;}
+.side-btn{width:100%;padding:0.45rem;background:transparent;border:1px solid #2a2a3a;color:#666;border-radius:3px;font-size:0.65rem;cursor:pointer;font-family:monospace;}
 .side-btn.gold{border-color:#b8a87a;color:#b8a87a;}
 #content{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
-header{padding:0.65rem 1rem;padding-top:max(0.65rem,env(safe-area-inset-top));background:#06060a;border-bottom:1px solid #1a1a2a;display:flex;align-items:center;gap:0.5rem;flex-shrink:0;}
+header{padding:0.6rem 1rem;padding-top:max(0.6rem,env(safe-area-inset-top));background:#06060a;border-bottom:1px solid #1a1a2a;display:flex;align-items:center;gap:0.4rem;flex-shrink:0;}
 .menu-btn{background:transparent;border:none;color:#555;font-size:1.1rem;cursor:pointer;padding:0.1rem 0.3rem;flex-shrink:0;}
 .title-area{flex:1;min-width:0;}
-.title-area .lbl{font-size:0.5rem;letter-spacing:0.2em;color:#b8a87a;font-family:monospace;}
-.title-area h2{font-size:0.85rem;font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.title-area h2 span{color:#333;font-size:0.62rem;}
-.hdr-right{display:flex;align-items:center;gap:0.35rem;flex-shrink:0;}
+.title-area .lbl{font-size:0.48rem;letter-spacing:0.2em;color:#b8a87a;font-family:monospace;}
+.title-area h2{font-size:0.82rem;font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.title-area h2 span{color:#333;font-size:0.6rem;}
+.proj-badge{font-size:0.58rem;color:#b8a87a;font-family:monospace;border:1px solid #2a2a3a;padding:0.1rem 0.4rem;border-radius:2px;white-space:nowrap;}
+.hdr-right{display:flex;align-items:center;gap:0.3rem;flex-shrink:0;}
 .status-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;box-shadow:0 0 5px #4ade80;}
-.hdr-btn{background:transparent;border:1px solid #1a1a2a;color:#555;padding:0.2rem 0.5rem;font-size:0.6rem;cursor:pointer;border-radius:2px;font-family:monospace;white-space:nowrap;}
+.hdr-btn{background:transparent;border:1px solid #1a1a2a;color:#555;padding:0.18rem 0.45rem;font-size:0.58rem;cursor:pointer;border-radius:2px;font-family:monospace;white-space:nowrap;}
 .ai-bar{display:flex;background:#06060a;border-bottom:1px solid #1a1a2a;flex-shrink:0;}
-.ai-tab{flex:1;padding:0.4rem;font-size:0.65rem;border:none;background:transparent;color:#444;cursor:pointer;font-family:monospace;border-bottom:2px solid transparent;}
+.ai-tab{flex:1;padding:0.38rem;font-size:0.62rem;border:none;background:transparent;color:#444;cursor:pointer;font-family:monospace;border-bottom:2px solid transparent;}
 .ai-tab.active{color:#b8a87a;border-bottom-color:#b8a87a;}
-#messages{flex:1;overflow-y:auto;padding:0.9rem;display:flex;flex-direction:column;gap:0.75rem;-webkit-overflow-scrolling:touch;}
-.mwrap{display:flex;flex-direction:column;gap:0.22rem;}
+#messages{flex:1;overflow-y:auto;padding:0.85rem;display:flex;flex-direction:column;gap:0.7rem;-webkit-overflow-scrolling:touch;}
+.mwrap{display:flex;flex-direction:column;gap:0.2rem;}
 .mwrap.user{align-items:flex-end;}
 .mwrap.assistant{align-items:flex-start;}
-.mname{font-size:0.5rem;letter-spacing:0.12em;font-family:monospace;}
+.mname{font-size:0.48rem;letter-spacing:0.12em;font-family:monospace;}
 .mwrap.user .mname{color:#444;}
 .mwrap.assistant .mname{color:#b8a87a;}
 .mwrap.assistant.gpt .mname{color:#74aa9c;}
-.mwrap.assistant.system .mname{color:#555;}
-.mbubble{max-width:88%;padding:0.65rem 0.85rem;line-height:1.75;font-size:0.82rem;white-space:pre-wrap;border-radius:3px;word-break:break-word;}
+.mbubble{max-width:88%;padding:0.62rem 0.82rem;line-height:1.75;font-size:0.8rem;white-space:pre-wrap;border-radius:3px;word-break:break-word;}
 .mwrap.user .mbubble{background:#1a1a2e;border:1px solid #252540;}
 .mwrap.assistant .mbubble{background:#0d0d18;border-left:2px solid #b8a87a;color:#d8d4c4;}
 .mwrap.assistant.gpt .mbubble{border-left-color:#74aa9c;}
-.mwrap.assistant.system .mbubble{background:transparent;border-left:1px solid #2a2a3a;color:#555;font-size:0.72rem;padding:0.3rem 0.7rem;}
 .mbubble img{max-width:100%;border-radius:4px;margin-top:0.5rem;display:block;}
-.mactions{display:flex;gap:0.3rem;margin-top:0.18rem;flex-wrap:wrap;}
-.mactions button{padding:0.18rem 0.55rem;border:1px solid;background:transparent;font-size:0.6rem;cursor:pointer;border-radius:2px;font-family:monospace;}
+.mactions{display:flex;gap:0.28rem;margin-top:0.15rem;flex-wrap:wrap;}
+.mactions button{padding:0.15rem 0.5rem;border:1px solid;background:transparent;font-size:0.58rem;cursor:pointer;border-radius:2px;font-family:monospace;}
 .pbtn{border-color:#b8a87a;color:#b8a87a;}
 .dbtn{border-color:#3a3a4a;color:#3a3a4a;}
 .deploy-btn{border-color:#4ade80;color:#4ade80;}
-#typing{display:none;flex-direction:column;align-items:flex-start;gap:0.22rem;}
-.tlabel{font-size:0.5rem;letter-spacing:0.12em;font-family:monospace;color:#b8a87a;}
-.tdots{padding:0.65rem 0.85rem;background:#0d0d18;border-left:2px solid #b8a87a;display:flex;gap:4px;align-items:center;border-radius:3px;}
+#typing{display:none;flex-direction:column;align-items:flex-start;gap:0.2rem;}
+.tlabel{font-size:0.48rem;letter-spacing:0.12em;font-family:monospace;color:#b8a87a;}
+.tdots{padding:0.62rem 0.82rem;background:#0d0d18;border-left:2px solid #b8a87a;display:flex;gap:4px;align-items:center;border-radius:3px;}
 .tdots span{width:5px;height:5px;border-radius:50%;background:#b8a87a;display:inline-block;animation:fade 1.4s infinite;}
 .tdots span:nth-child(2){animation-delay:.2s;}
 .tdots span:nth-child(3){animation-delay:.4s;}
 @keyframes fade{0%,100%{opacity:.12}50%{opacity:1}}
-.imgprev-bar{padding:0.45rem 0.85rem;background:#0d0d14;border-top:1px solid #1a1a2a;display:none;gap:0.5rem;flex-wrap:wrap;align-items:center;flex-shrink:0;}
+.imgprev-bar{padding:0.4rem 0.82rem;background:#0d0d14;border-top:1px solid #1a1a2a;display:none;gap:0.5rem;flex-wrap:wrap;align-items:center;flex-shrink:0;}
 .imgprev-bar.show{display:flex;}
 .imgprev-item{position:relative;}
-.imgprev-item img{width:55px;height:55px;object-fit:cover;border-radius:4px;border:1px solid #2a2a3a;}
-.imgprev-item button{position:absolute;top:-6px;right:-6px;width:18px;height:18px;border-radius:50%;background:#ef4444;border:none;color:white;font-size:10px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.quickbtns{padding:0 0.85rem 0.35rem;display:flex;gap:0.28rem;flex-wrap:wrap;flex-shrink:0;}
-.quickbtns button{padding:0.16rem 0.48rem;border:1px solid #1a1a2a;background:transparent;color:#444;font-size:0.6rem;cursor:pointer;border-radius:2px;font-family:inherit;}
-footer{padding:0.55rem 0.85rem;padding-bottom:max(0.55rem,env(safe-area-inset-bottom));border-top:1px solid #111120;background:#06060a;flex-shrink:0;}
-.frow{display:flex;gap:0.4rem;align-items:flex-end;}
-.img-btn{padding:0.5rem 0.65rem;background:#0d0d14;border:1px solid #2a2a3a;border-radius:3px;color:#666;font-size:0.95rem;cursor:pointer;flex-shrink:0;line-height:1;}
-textarea{flex:1;padding:0.5rem 0.75rem;background:#0d0d14;border:1px solid #1a1a2a;color:#e8e4d8;font-size:0.82rem;font-family:inherit;resize:none;outline:none;border-radius:3px;max-height:120px;min-height:36px;-webkit-appearance:none;}
+.imgprev-item img{width:52px;height:52px;object-fit:cover;border-radius:4px;border:1px solid #2a2a3a;}
+.imgprev-item button{position:absolute;top:-5px;right:-5px;width:17px;height:17px;border-radius:50%;background:#ef4444;border:none;color:white;font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.quickbtns{padding:0 0.82rem 0.3rem;display:flex;gap:0.25rem;flex-wrap:wrap;flex-shrink:0;}
+.quickbtns button{padding:0.14rem 0.45rem;border:1px solid #1a1a2a;background:transparent;color:#444;font-size:0.58rem;cursor:pointer;border-radius:2px;font-family:inherit;}
+footer{padding:0.5rem 0.82rem;padding-bottom:max(0.5rem,env(safe-area-inset-bottom));border-top:1px solid #111120;background:#06060a;flex-shrink:0;}
+.frow{display:flex;gap:0.38rem;align-items:flex-end;}
+.img-btn{padding:0.48rem 0.62rem;background:#0d0d14;border:1px solid #2a2a3a;border-radius:3px;color:#666;font-size:0.9rem;cursor:pointer;flex-shrink:0;line-height:1;}
+textarea{flex:1;padding:0.48rem 0.72rem;background:#0d0d14;border:1px solid #1a1a2a;color:#e8e4d8;font-size:0.8rem;font-family:inherit;resize:none;outline:none;border-radius:3px;max-height:120px;min-height:34px;-webkit-appearance:none;}
 textarea:focus{border-color:#b8a87a;}
 textarea::placeholder{color:#2a2a3a;}
-#sendBtn{padding:0.5rem 0.85rem;background:#b8a87a;color:#0a0a0f;border:none;border-radius:3px;font-size:0.75rem;font-weight:bold;cursor:pointer;font-family:monospace;white-space:nowrap;flex-shrink:0;}
+#sendBtn{padding:0.48rem 0.82rem;background:#b8a87a;color:#0a0a0f;border:none;border-radius:3px;font-size:0.72rem;font-weight:bold;cursor:pointer;font-family:monospace;white-space:nowrap;flex-shrink:0;}
 #sendBtn:disabled{background:#111;color:#333;cursor:not-allowed;}
-#previewModal,#memoryModal,#deployModal,#apiModal{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.95);flex-direction:column;}
-#previewModal.show,#memoryModal.show,#deployModal.show,#apiModal.show{display:flex;}
-.mhdr{background:#0d0d14;border-bottom:1px solid #2a2a3a;padding:0.6rem 1rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-.mhdr span{font-size:0.65rem;letter-spacing:0.1em;color:#b8a87a;font-family:monospace;}
-.mhdr div{display:flex;gap:0.35rem;}
-.mhdr button{padding:0.18rem 0.55rem;border:1px solid;background:transparent;font-size:0.6rem;cursor:pointer;border-radius:2px;font-family:monospace;}
+#previewModal,#memoryModal,#deployModal,#apiModal,#projectModal{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.95);flex-direction:column;}
+#previewModal.show,#memoryModal.show,#deployModal.show,#apiModal.show,#projectModal.show{display:flex;}
+.mhdr{background:#0d0d14;border-bottom:1px solid #2a2a3a;padding:0.58rem 1rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.mhdr span{font-size:0.62rem;letter-spacing:0.1em;color:#b8a87a;font-family:monospace;}
+.mhdr div{display:flex;gap:0.32rem;}
+.mhdr button{padding:0.16rem 0.52rem;border:1px solid;background:transparent;font-size:0.58rem;cursor:pointer;border-radius:2px;font-family:monospace;}
 .btn-dl{border-color:#b8a87a;color:#b8a87a;}
 .btn-cl{border-color:#555;color:#555;}
 .btn-dep{border-color:#4ade80;color:#4ade80;}
 #pf{flex:1;border:none;background:white;}
-#memList{flex:1;overflow-y:auto;padding:0.85rem;display:flex;flex-direction:column;gap:0.45rem;}
-.mem-section{font-size:0.6rem;color:#b8a87a;font-family:monospace;letter-spacing:0.1em;margin:0.5rem 0 0.3rem;padding-bottom:0.2rem;border-bottom:1px solid #1a1a2a;}
-.memitem{background:#0f0f18;border:1px solid #2a2a3a;border-left:2px solid #b8a87a;padding:0.6rem 0.8rem;border-radius:3px;display:flex;justify-content:space-between;align-items:flex-start;gap:0.4rem;}
-.memtext{font-size:0.75rem;color:#d8d4c4;line-height:1.6;flex:1;}
-.memmeta{display:flex;flex-direction:column;align-items:flex-end;gap:0.22rem;flex-shrink:0;}
-.memdate{font-size:0.55rem;color:#444;font-family:monospace;}
-.memdel{background:transparent;border:1px solid #3a1a1a;color:#666;font-size:0.55rem;cursor:pointer;padding:0.1rem 0.32rem;border-radius:2px;font-family:monospace;}
-.memadd{padding:0.65rem 0.85rem;border-top:1px solid #1a1a2a;display:flex;gap:0.4rem;flex-shrink:0;}
-.memadd input{flex:1;padding:0.5rem 0.75rem;background:#0d0d14;border:1px solid #2a2a3a;color:#e8e4d8;font-size:0.75rem;font-family:inherit;outline:none;border-radius:3px;}
-.memadd button{padding:0.5rem 0.85rem;background:#b8a87a;color:#0a0a0f;border:none;border-radius:3px;font-size:0.7rem;font-weight:bold;cursor:pointer;font-family:monospace;white-space:nowrap;}
-.emptymem{color:#333;font-size:0.75rem;text-align:center;padding:2rem;}
-.api-content{flex:1;overflow-y:auto;padding:1rem;}
-.api-row{background:#0f0f18;border:1px solid #2a2a3a;border-radius:4px;padding:1rem;margin-bottom:0.8rem;}
-.api-row .api-label{font-size:0.68rem;color:#b8a87a;letter-spacing:0.1em;margin-bottom:0.5rem;font-family:monospace;display:flex;align-items:center;justify-content:space-between;}
-.api-status{font-size:0.6rem;padding:0.15rem 0.5rem;border-radius:10px;}
+#memList{flex:1;overflow-y:auto;padding:0.82rem;display:flex;flex-direction:column;gap:0.42rem;}
+.mem-section{font-size:0.58rem;color:#b8a87a;font-family:monospace;letter-spacing:0.1em;margin:0.5rem 0 0.28rem;padding-bottom:0.18rem;border-bottom:1px solid #1a1a2a;}
+.memitem{background:#0f0f18;border:1px solid #2a2a3a;border-left:2px solid #b8a87a;padding:0.58rem 0.78rem;border-radius:3px;display:flex;justify-content:space-between;align-items:flex-start;gap:0.38rem;}
+.memtext{font-size:0.72rem;color:#d8d4c4;line-height:1.6;flex:1;}
+.memmeta{display:flex;flex-direction:column;align-items:flex-end;gap:0.2rem;flex-shrink:0;}
+.memdate{font-size:0.52rem;color:#444;font-family:monospace;}
+.memdel{background:transparent;border:1px solid #3a1a1a;color:#666;font-size:0.52rem;cursor:pointer;padding:0.1rem 0.3rem;border-radius:2px;font-family:monospace;}
+.memadd{padding:0.62rem 0.82rem;border-top:1px solid #1a1a2a;display:flex;gap:0.38rem;flex-shrink:0;}
+.memadd input{flex:1;padding:0.48rem 0.72rem;background:#0d0d14;border:1px solid #2a2a3a;color:#e8e4d8;font-size:0.72rem;font-family:inherit;outline:none;border-radius:3px;}
+.memadd button{padding:0.48rem 0.82rem;background:#b8a87a;color:#0a0a0f;border:none;border-radius:3px;font-size:0.68rem;font-weight:bold;cursor:pointer;font-family:monospace;white-space:nowrap;}
+.emptymem{color:#333;font-size:0.72rem;text-align:center;padding:2rem;}
+.api-content,.proj-content{flex:1;overflow-y:auto;padding:0.9rem;}
+.api-row,.proj-form{background:#0f0f18;border:1px solid #2a2a3a;border-radius:4px;padding:0.9rem;margin-bottom:0.75rem;}
+.api-row .api-label{font-size:0.65rem;color:#b8a87a;letter-spacing:0.1em;margin-bottom:0.45rem;font-family:monospace;display:flex;align-items:center;justify-content:space-between;}
+.api-status{font-size:0.58rem;padding:0.12rem 0.45rem;border-radius:10px;}
 .api-status.set{background:#0a2a0a;color:#4ade80;border:1px solid #4ade80;}
 .api-status.unset{background:#2a1a0a;color:#888;border:1px solid #333;}
-.api-input-row{display:flex;gap:0.5rem;align-items:center;}
-.api-input-row input{flex:1;padding:0.55rem 0.8rem;background:#0a0a0f;border:1px solid #2a2a3a;color:#e8e4d8;font-size:0.75rem;font-family:monospace;border-radius:3px;outline:none;}
-.api-input-row input:focus{border-color:#b8a87a;}
-.api-save-btn{padding:0.55rem 0.9rem;background:#b8a87a;color:#0a0a0f;border:none;border-radius:3px;font-size:0.7rem;font-weight:bold;cursor:pointer;font-family:monospace;white-space:nowrap;}
-.api-del-btn{padding:0.55rem 0.7rem;background:transparent;border:1px solid #7f1d1d;color:#ef4444;border-radius:3px;font-size:0.7rem;cursor:pointer;font-family:monospace;}
-.deploy-content{flex:1;padding:1.2rem;display:flex;flex-direction:column;gap:0.8rem;overflow-y:auto;}
-.deploy-status{background:#0f0f18;border:1px solid #2a2a3a;padding:1rem;border-radius:4px;font-size:0.78rem;color:#d8d4c4;line-height:1.8;white-space:pre-wrap;}
+.api-input-row{display:flex;gap:0.45rem;align-items:center;}
+.api-input-row input,.proj-input{flex:1;padding:0.52rem 0.75rem;background:#0a0a0f;border:1px solid #2a2a3a;color:#e8e4d8;font-size:0.72rem;font-family:monospace;border-radius:3px;outline:none;}
+.api-input-row input:focus,.proj-input:focus{border-color:#b8a87a;}
+.api-save-btn,.proj-save-btn{padding:0.52rem 0.85rem;background:#b8a87a;color:#0a0a0f;border:none;border-radius:3px;font-size:0.68rem;font-weight:bold;cursor:pointer;font-family:monospace;white-space:nowrap;}
+.api-del-btn{padding:0.52rem 0.68rem;background:transparent;border:1px solid #7f1d1d;color:#ef4444;border-radius:3px;font-size:0.68rem;cursor:pointer;font-family:monospace;}
+.proj-label{font-size:0.62rem;color:#b8a87a;font-family:monospace;margin-bottom:0.35rem;margin-top:0.6rem;}
+.proj-label:first-child{margin-top:0;}
+.proj-textarea{width:100%;padding:0.52rem 0.75rem;background:#0a0a0f;border:1px solid #2a2a3a;color:#e8e4d8;font-size:0.72rem;font-family:inherit;border-radius:3px;outline:none;resize:none;min-height:80px;line-height:1.6;}
+.proj-textarea:focus{border-color:#b8a87a;}
+.proj-card{background:#0f0f18;border:1px solid #2a2a3a;border-radius:4px;padding:0.8rem;margin-bottom:0.6rem;cursor:pointer;}
+.proj-card:hover{border-color:#b8a87a;}
+.proj-card.active-proj{border-color:#b8a87a;background:#1a1a2e;}
+.proj-card-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:0.3rem;}
+.proj-card-name{font-size:0.78rem;color:#e8e4d8;font-weight:bold;}
+.proj-card-desc{font-size:0.65rem;color:#666;line-height:1.5;white-space:pre-wrap;}
+.proj-card-actions{display:flex;gap:0.3rem;margin-top:0.5rem;}
+.proj-card-actions button{padding:0.15rem 0.5rem;border:1px solid #2a2a3a;background:transparent;color:#666;font-size:0.6rem;cursor:pointer;border-radius:2px;font-family:monospace;}
+.proj-card-actions button:hover{color:#b8a87a;border-color:#b8a87a;}
+.deploy-content{flex:1;padding:1.1rem;display:flex;flex-direction:column;gap:0.75rem;overflow-y:auto;}
+.deploy-status{background:#0f0f18;border:1px solid #2a2a3a;padding:0.9rem;border-radius:4px;font-size:0.75rem;color:#d8d4c4;line-height:1.8;white-space:pre-wrap;}
 .deploy-progress{height:3px;background:#1a1a2a;border-radius:2px;overflow:hidden;}
 .deploy-progress-bar{height:100%;background:#4ade80;border-radius:2px;transition:width 0.3s;width:0%;}
-.deployed-app-item{background:#0f0f18;border:1px solid #2a2a3a;padding:0.7rem;border-radius:3px;margin-bottom:0.4rem;}
-.deployed-app-item .app-name{font-size:0.78rem;color:#e8e4d8;margin-bottom:0.3rem;}
-.deployed-app-item a{font-size:0.65rem;color:#4ade80;font-family:monospace;word-break:break-all;}
-.deployed-app-item .app-date{font-size:0.58rem;color:#444;margin-top:0.2rem;}
+.deployed-app-item{background:#0f0f18;border:1px solid #2a2a3a;padding:0.68rem;border-radius:3px;margin-bottom:0.38rem;}
+.deployed-app-item .app-name{font-size:0.75rem;color:#e8e4d8;margin-bottom:0.28rem;}
+.deployed-app-item a{font-size:0.62rem;color:#4ade80;font-family:monospace;word-break:break-all;}
+.deployed-app-item .app-date{font-size:0.55rem;color:#444;margin-top:0.18rem;}
 #overlay{display:none;position:fixed;inset:0;z-index:50;background:rgba(0,0,0,0.5);}
 #overlay.show{display:block;}
 @media(max-width:640px){
@@ -180,8 +200,12 @@ textarea::placeholder{color:#2a2a3a;}
     <div class="sidebar-header">
       <div class="logo">Genie <span>AI</span></div>
     </div>
-    <div style="padding:0 0.7rem;">
-      <button class="new-chat-btn" onclick="newChat()">＋ 新しい会話</button>
+    <div style="padding:0.4rem 0.7rem 0;">
+      <div class="sidebar-section">PROJECTS</div>
+      <button class="new-btn" onclick="openProjectModal('new')">＋ 新しいプロジェクト</button>
+      <div id="projectsList"></div>
+      <div class="sidebar-section" style="margin-top:0.5rem;">CHATS</div>
+      <button class="new-btn" onclick="newChat()">＋ 新しい会話</button>
     </div>
     <div class="sessions-list" id="sessionsList"></div>
     <div class="sidebar-footer">
@@ -199,8 +223,9 @@ textarea::placeholder{color:#2a2a3a;}
         <h2>Genie <span>— おしん様 専属</span></h2>
       </div>
       <div class="hdr-right">
+        <span class="proj-badge" id="activeProjBadge" style="display:none"></span>
         <div class="status-dot"></div>
-        <button class="hdr-btn" onclick="openAPI()">🔑 API</button>
+        <button class="hdr-btn" onclick="openAPI()">🔑</button>
       </div>
     </header>
     <div class="ai-bar">
@@ -213,10 +238,10 @@ textarea::placeholder{color:#2a2a3a;}
         <div class="mname">GENIE</div>
         <div class="mbubble">お待ちしておりました、おしん様。
 
-アップグレードされました：
-・Claude Sonnet採用で回答精度が大幅向上
-・会話後に自動でおしん様を分析・記憶更新
-・記憶がカテゴリ別に整理されます
+プロジェクト機能が追加されました。左のサイドバーから：
+・「＋ 新しいプロジェクト」でプロジェクトを作成
+・プロジェクトごとに指示文を設定
+・選択中のプロジェクトの指示文が自動で適用されます
 
 ご用件をお申し付けください。</div>
       </div>
@@ -225,12 +250,11 @@ textarea::placeholder{color:#2a2a3a;}
         <div class="tdots"><span></span><span></span><span></span></div>
       </div>
     </div>
-    <div class="quickbtns">
+    <div class="quickbtns" id="quickbtns">
       <button onclick="qs('最新のAIニュースを調べて')">🔍 AIニュース</button>
       <button onclick="qs('ToDoアプリを作って')">ToDoアプリ</button>
       <button onclick="qs('私のことを分析して')">私を分析</button>
       <button onclick="qs('今日の提案をして')">今日の提案</button>
-      <button onclick="qs('warframe Uriel build 2025を調べて')">warframe</button>
     </div>
     <div class="imgprev-bar" id="imgbar"></div>
     <footer>
@@ -244,43 +268,54 @@ textarea::placeholder{color:#2a2a3a;}
   </div>
 </div>
 
+<!-- PROJECT MODAL -->
+<div id="projectModal">
+  <div class="mhdr">
+    <span id="projModalTitle">— 新しいプロジェクト —</span>
+    <button class="btn-cl" onclick="closeProjectModal()" style="padding:0.16rem 0.52rem;border:1px solid #555;background:transparent;color:#555;font-size:0.58rem;cursor:pointer;border-radius:2px;font-family:monospace;">閉じる</button>
+  </div>
+  <div class="proj-content">
+    <div id="projFormView">
+      <div class="proj-form">
+        <input type="hidden" id="editProjId">
+        <div class="proj-label">プロジェクト名</div>
+        <input class="proj-input" id="projName" placeholder="例：warframe攻略、ビジネスLINE">
+        <div class="proj-label">アイコン（絵文字）</div>
+        <input class="proj-input" id="projIcon" placeholder="例：🎮 💼 📊" style="max-width:120px;">
+        <div class="proj-label">指示文（システムプロンプト）</div>
+        <textarea class="proj-textarea" id="projPrompt" placeholder="例：あなたはwarframeの専門家です。おしん様が使用しているフレームはUrielです。ビルドやmod構成について詳しくアドバイスしてください。"></textarea>
+        <div class="proj-label">クイックボタン（カンマ区切り）</div>
+        <input class="proj-input" id="projQuicks" placeholder="例：おすすめmod,ビルド相談,最新情報を調べて">
+        <div style="margin-top:1rem;display:flex;gap:0.5rem;">
+          <button class="proj-save-btn" style="flex:1;" onclick="saveProject()">保存</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- API MODAL -->
 <div id="apiModal">
   <div class="mhdr">
     <span>— APIキー管理 —</span>
-    <button class="btn-cl" onclick="closeAPI()" style="padding:0.18rem 0.55rem;border:1px solid #555;background:transparent;color:#555;font-size:0.6rem;cursor:pointer;border-radius:2px;font-family:monospace;">閉じる</button>
+    <button class="btn-cl" onclick="closeAPI()" style="padding:0.16rem 0.52rem;border:1px solid #555;background:transparent;color:#555;font-size:0.58rem;cursor:pointer;border-radius:2px;font-family:monospace;">閉じる</button>
   </div>
   <div class="api-content">
     <div class="api-row">
       <div class="api-label">ANTHROPIC（Claude Sonnet）必須 <span class="api-status" id="ck-status">未設定</span></div>
-      <div class="api-input-row">
-        <input type="password" id="ck-edit" placeholder="sk-ant-api03-...">
-        <button class="api-save-btn" onclick="saveOneKey('ck','ogck','sk-ant-','ck-status')">保存</button>
-        <button class="api-del-btn" onclick="delOneKey('ck','ogck','ck-status')">削除</button>
-      </div>
+      <div class="api-input-row"><input type="password" id="ck-edit" placeholder="sk-ant-api03-..."><button class="api-save-btn" onclick="saveOneKey('ck','ogck','sk-ant-','ck-status')">保存</button><button class="api-del-btn" onclick="delOneKey('ck','ogck','ck-status')">削除</button></div>
     </div>
     <div class="api-row">
       <div class="api-label">OPENAI（ChatGPT）任意 <span class="api-status" id="ok-status">未設定</span></div>
-      <div class="api-input-row">
-        <input type="password" id="ok-edit" placeholder="sk-proj-...">
-        <button class="api-save-btn" onclick="saveOneKey('ok','ogok','sk-','ok-status')">保存</button>
-        <button class="api-del-btn" onclick="delOneKey('ok','ogok','ok-status')">削除</button>
-      </div>
+      <div class="api-input-row"><input type="password" id="ok-edit" placeholder="sk-proj-..."><button class="api-save-btn" onclick="saveOneKey('ok','ogok','sk-','ok-status')">保存</button><button class="api-del-btn" onclick="delOneKey('ok','ogok','ok-status')">削除</button></div>
     </div>
     <div class="api-row">
       <div class="api-label">GITHUB TOKEN（デプロイ）任意 <span class="api-status" id="gk-status">未設定</span></div>
-      <div class="api-input-row">
-        <input type="password" id="gk-edit" placeholder="ghp_...">
-        <button class="api-save-btn" onclick="saveOneKey('gk','oggk','ghp_','gk-status')">保存</button>
-        <button class="api-del-btn" onclick="delOneKey('gk','oggk','gk-status')">削除</button>
-      </div>
+      <div class="api-input-row"><input type="password" id="gk-edit" placeholder="ghp_..."><button class="api-save-btn" onclick="saveOneKey('gk','oggk','ghp_','gk-status')">保存</button><button class="api-del-btn" onclick="delOneKey('gk','oggk','gk-status')">削除</button></div>
     </div>
     <div class="api-row">
       <div class="api-label">TAVILY（Web検索・URL読込）任意 <span class="api-status" id="tk-status">未設定</span></div>
-      <div class="api-input-row">
-        <input type="password" id="tk-edit" placeholder="tvly-...">
-        <button class="api-save-btn" onclick="saveOneKey('tk','ogtk','tvly-','tk-status')">保存</button>
-        <button class="api-del-btn" onclick="delOneKey('tk','ogtk','tk-status')">削除</button>
-      </div>
+      <div class="api-input-row"><input type="password" id="tk-edit" placeholder="tvly-..."><button class="api-save-btn" onclick="saveOneKey('tk','ogtk','tvly-','tk-status')">保存</button><button class="api-del-btn" onclick="delOneKey('tk','ogtk','tk-status')">削除</button></div>
     </div>
   </div>
 </div>
@@ -288,11 +323,7 @@ textarea::placeholder{color:#2a2a3a;}
 <div id="previewModal">
   <div class="mhdr">
     <span>— 完成品プレビュー —</span>
-    <div>
-      <button class="btn-dep" onclick="deployCurrentCode()">🚀 デプロイ</button>
-      <button class="btn-dl" onclick="dlPreview()">HTMLで保存</button>
-      <button class="btn-cl" onclick="closePrev()">閉じる</button>
-    </div>
+    <div><button class="btn-dep" onclick="deployCurrentCode()">🚀 デプロイ</button><button class="btn-dl" onclick="dlPreview()">HTMLで保存</button><button class="btn-cl" onclick="closePrev()">閉じる</button></div>
   </div>
   <iframe id="pf"></iframe>
 </div>
@@ -300,19 +331,16 @@ textarea::placeholder{color:#2a2a3a;}
 <div id="memoryModal">
   <div class="mhdr">
     <span>— ジーニーの記憶 —</span>
-    <button class="btn-cl" onclick="closeMem()" style="padding:0.18rem 0.55rem;border:1px solid #555;background:transparent;color:#555;font-size:0.6rem;cursor:pointer;border-radius:2px;font-family:monospace;">閉じる</button>
+    <button class="btn-cl" onclick="closeMem()" style="padding:0.16rem 0.52rem;border:1px solid #555;background:transparent;color:#555;font-size:0.58rem;cursor:pointer;border-radius:2px;font-family:monospace;">閉じる</button>
   </div>
   <div id="memList"></div>
-  <div class="memadd">
-    <input type="text" id="mi" placeholder="覚えさせたいことを入力...">
-    <button onclick="addMemMan()">記憶させる</button>
-  </div>
+  <div class="memadd"><input type="text" id="mi" placeholder="覚えさせたいことを入力..."><button onclick="addMemMan()">記憶させる</button></div>
 </div>
 
 <div id="deployModal">
   <div class="mhdr">
     <span>— デプロイ —</span>
-    <button class="btn-cl" onclick="closeDeployModal()" style="padding:0.18rem 0.55rem;border:1px solid #555;background:transparent;color:#555;font-size:0.6rem;cursor:pointer;border-radius:2px;font-family:monospace;">閉じる</button>
+    <button class="btn-cl" onclick="closeDeployModal()" style="padding:0.16rem 0.52rem;border:1px solid #555;background:transparent;color:#555;font-size:0.58rem;cursor:pointer;border-radius:2px;font-family:monospace;">閉じる</button>
   </div>
   <div class="deploy-content">
     <div class="deploy-status" id="deployStatus">デプロイ履歴</div>
@@ -323,55 +351,101 @@ textarea::placeholder{color:#2a2a3a;}
 
 <script>
 let ck='',ok='',gk='',tk='',loading=false,prevCode='',ai='auto',imgs=[];
-let sessions=[],currentSessionId=null;
+let sessions=[],currentSessionId=null,currentProjectId=null;
 const GH_USER='sansan2103-a11y',GH_REPO='genie-apps';
-const MODEL_CLAUDE='claude-sonnet-4-5-20251001';
-const MODEL_GPT='gpt-4o-mini';
+const MODEL_CLAUDE='claude-sonnet-4-5-20251001',MODEL_GPT='gpt-4o-mini';
 
+// STORAGE
 const getSessions=()=>{try{return JSON.parse(localStorage.getItem('gs')||'[]');}catch{return[];}};
 const saveSessions=s=>localStorage.setItem('gs',JSON.stringify(s));
+const getProjects=()=>{try{return JSON.parse(localStorage.getItem('gp')||'[]');}catch{return[];}};
+const saveProjects=p=>localStorage.setItem('gp',JSON.stringify(p));
 const getDeployedApps=()=>{try{return JSON.parse(localStorage.getItem('gda')||'[]');}catch{return[];}};
 const saveDeployedApps=a=>localStorage.setItem('gda',JSON.stringify(a));
 
-// 構造化された記憶システム
+// MEMORY
 const MEM_KEYS={profile:'gm_profile',game:'gm_game',work:'gm_work',misc:'gm_misc'};
-function getAllMems(){
-  const all=[];
-  Object.entries(MEM_KEYS).forEach(([cat,key])=>{
-    try{const m=JSON.parse(localStorage.getItem(key)||'[]');m.forEach(x=>all.push({...x,cat}));}catch{}
-  });
-  return all;
-}
+function getAllMems(){const all=[];Object.entries(MEM_KEYS).forEach(([cat,key])=>{try{const m=JSON.parse(localStorage.getItem(key)||'[]');m.forEach(x=>all.push({...x,cat}));}catch{}});return all;}
 function getMemsByCategory(cat){try{return JSON.parse(localStorage.getItem(MEM_KEYS[cat])||'[]');}catch{return[];}}
-function saveMemsByCategory(cat,mems){
-  localStorage.setItem(MEM_KEYS[cat],JSON.stringify(mems));
-  updateMemCount();
-}
-function updateMemCount(){
-  const total=getAllMems().length;
-  document.getElementById('mc').textContent=total;
-}
-function addMemWithCategory(text,cat='misc'){
-  const mems=getMemsByCategory(cat);
-  // 重複チェック
-  if(mems.some(m=>m.t===text))return;
-  mems.push({t:text,d:new Date().toLocaleDateString('ja-JP')});
-  saveMemsByCategory(cat,mems);
-}
+function saveMemsByCategory(cat,mems){localStorage.setItem(MEM_KEYS[cat],JSON.stringify(mems));updateMemCount();}
+function updateMemCount(){document.getElementById('mc').textContent=getAllMems().length;}
+function addMemWithCategory(text,cat='misc'){const mems=getMemsByCategory(cat);if(mems.some(m=>m.t===text))return;mems.push({t:text,d:new Date().toLocaleDateString('ja-JP')});saveMemsByCategory(cat,mems);}
 function buildMemoryContext(){
-  const profile=getMemsByCategory('profile');
-  const game=getMemsByCategory('game');
-  const work=getMemsByCategory('work');
-  const misc=getMemsByCategory('misc');
+  const p=getMemsByCategory('profile'),g=getMemsByCategory('game'),w=getMemsByCategory('work'),m=getMemsByCategory('misc');
   let ctx='';
-  if(profile.length)ctx+='\n【おしん様のプロフィール】\n'+profile.map(x=>'・'+x.t).join('\n');
-  if(game.length)ctx+='\n【ゲーム情報】\n'+game.map(x=>'・'+x.t).join('\n');
-  if(work.length)ctx+='\n【仕事・プロジェクト】\n'+work.map(x=>'・'+x.t).join('\n');
-  if(misc.length)ctx+='\n【その他の記憶】\n'+misc.map(x=>'・'+x.t).join('\n');
+  if(p.length)ctx+='\n【おしん様のプロフィール】\n'+p.map(x=>'・'+x.t).join('\n');
+  if(g.length)ctx+='\n【ゲーム情報】\n'+g.map(x=>'・'+x.t).join('\n');
+  if(w.length)ctx+='\n【仕事・プロジェクト】\n'+w.map(x=>'・'+x.t).join('\n');
+  if(m.length)ctx+='\n【その他の記憶】\n'+m.map(x=>'・'+x.t).join('\n');
   return ctx?'\n\n【おしん様の記憶データベース】'+ctx:'';
 }
 
-// API KEY MANAGEMENT
+// PROJECT MANAGEMENT
+function getProj(id){return getProjects().find(p=>p.id===id);}
+function renderProjects(){
+  const list=document.getElementById('projectsList');
+  const projs=getProjects();
+  list.innerHTML=projs.map(p=>`
+    <div class="proj-item${p.id===currentProjectId?' active':''}" onclick="selectProject('${p.id}')">
+      <span class="proj-icon">${p.icon||'📁'}</span>
+      <span class="proj-name">${p.name}</span>
+      <button class="proj-del" onclick="event.stopPropagation();editProject('${p.id}')">✎</button>
+    </div>`).join('');
+}
+function selectProject(id){
+  currentProjectId=currentProjectId===id?null:id;
+  renderProjects();
+  const proj=currentProjectId?getProj(currentProjectId):null;
+  const badge=document.getElementById('activeProjBadge');
+  if(proj){badge.textContent=`${proj.icon||'📁'} ${proj.name}`;badge.style.display='inline';}
+  else{badge.style.display='none';}
+  // クイックボタン更新
+  if(proj&&proj.quicks){
+    const btns=proj.quicks.split(',').map(q=>q.trim()).filter(Boolean);
+    document.getElementById('quickbtns').innerHTML=btns.map(q=>`<button onclick="qs('${q}')">${q}</button>`).join('');
+  }else{
+    document.getElementById('quickbtns').innerHTML=`
+      <button onclick="qs('最新のAIニュースを調べて')">🔍 AIニュース</button>
+      <button onclick="qs('ToDoアプリを作って')">ToDoアプリ</button>
+      <button onclick="qs('私のことを分析して')">私を分析</button>
+      <button onclick="qs('今日の提案をして')">今日の提案</button>`;
+  }
+  closeSidebar();
+}
+function openProjectModal(mode,id){
+  document.getElementById('editProjId').value=id||'';
+  document.getElementById('projModalTitle').textContent=mode==='new'?'— 新しいプロジェクト —':'— プロジェクト編集 —';
+  if(mode==='edit'&&id){
+    const p=getProj(id);
+    if(p){document.getElementById('projName').value=p.name||'';document.getElementById('projIcon').value=p.icon||'';document.getElementById('projPrompt').value=p.prompt||'';document.getElementById('projQuicks').value=p.quicks||'';}
+  }else{document.getElementById('projName').value='';document.getElementById('projIcon').value='';document.getElementById('projPrompt').value='';document.getElementById('projQuicks').value='';}
+  document.getElementById('projectModal').classList.add('show');
+}
+function editProject(id){openProjectModal('edit',id);}
+function closeProjectModal(){document.getElementById('projectModal').classList.remove('show');}
+function saveProject(){
+  const name=document.getElementById('projName').value.trim();
+  if(!name){alert('プロジェクト名を入力してください');return;}
+  const projs=getProjects();
+  const editId=document.getElementById('editProjId').value;
+  const proj={
+    id:editId||'p'+Date.now(),
+    name,
+    icon:document.getElementById('projIcon').value.trim()||'📁',
+    prompt:document.getElementById('projPrompt').value.trim(),
+    quicks:document.getElementById('projQuicks').value.trim(),
+    created:Date.now()
+  };
+  if(editId){const idx=projs.findIndex(p=>p.id===editId);if(idx>=0)projs[idx]=proj;else projs.push(proj);}
+  else{projs.push(proj);}
+  saveProjects(projs);
+  renderProjects();
+  closeProjectModal();
+  if(!editId)selectProject(proj.id);
+}
+function deleteProject(id){if(!confirm('このプロジェクトを削除しますか？'))return;const projs=getProjects().filter(p=>p.id!==id);saveProjects(projs);if(currentProjectId===id)selectProject(null);renderProjects();}
+
+// API
 function openAPI(){updateAPIStatus();document.getElementById('apiModal').classList.add('show');}
 function closeAPI(){document.getElementById('apiModal').classList.remove('show');}
 function updateAPIStatus(){
@@ -386,86 +460,52 @@ function saveOneKey(varName,storeKey,prefix,statusId){
   if(!val){alert('キーを入力してください');return;}
   if(!val.startsWith(prefix)){alert(`キーは ${prefix} で始まる必要があります`);return;}
   localStorage.setItem(storeKey,val);
-  if(varName==='ck')ck=val;
-  else if(varName==='ok'){ok=val;document.getElementById('tab-openai').style.opacity=ok?'1':'0.4';}
-  else if(varName==='gk')gk=val;
-  else if(varName==='tk')tk=val;
-  input.value='';updateAPIStatus();
-  alert('✅ 保存しました！');
+  if(varName==='ck')ck=val;else if(varName==='ok'){ok=val;document.getElementById('tab-openai').style.opacity=ok?'1':'0.4';}else if(varName==='gk')gk=val;else if(varName==='tk')tk=val;
+  input.value='';updateAPIStatus();alert('✅ 保存しました！');
 }
-function delOneKey(varName,storeKey,statusId){
+function delOneKey(varName,storeKey){
   if(!confirm('このキーを削除しますか？'))return;
   localStorage.removeItem(storeKey);
-  if(varName==='ck')ck='';
-  else if(varName==='ok'){ok='';document.getElementById('tab-openai').style.opacity='0.4';}
-  else if(varName==='gk')gk='';
-  else if(varName==='tk')tk='';
+  if(varName==='ck')ck='';else if(varName==='ok'){ok='';document.getElementById('tab-openai').style.opacity='0.4';}else if(varName==='gk')gk='';else if(varName==='tk')tk='';
   updateAPIStatus();
 }
 
-// WEB SEARCH & URL
-async function webSearch(query){
-  if(!tk)return null;
-  try{
-    const res=await fetch('https://api.tavily.com/search',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${tk}`},body:JSON.stringify({query,max_results:5,search_depth:'basic',include_answer:true})});
-    if(!res.ok)return null;
-    const data=await res.json();
-    let result='';
-    if(data.answer)result+=`【要約】${data.answer}\n\n`;
-    if(data.results?.length)result+=data.results.map(r=>`【${r.title}】\n${r.content}\nURL: ${r.url}`).join('\n\n');
-    return result||null;
-  }catch{return null;}
-}
-async function fetchURL(url){
-  if(!tk)return null;
-  try{
-    const res=await fetch('https://api.tavily.com/extract',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${tk}`},body:JSON.stringify({urls:[url],include_images:false})});
-    if(!res.ok)return null;
-    const data=await res.json();
-    return(data.results?.[0]?.raw_content||data.results?.[0]?.content||'').substring(0,4000)||null;
-  }catch{return null;}
-}
-function detectIntent(msg){
-  const urlMatch=msg.match(/https?:\/\/[^\s\u3000-\u9fff]+/);
-  if(urlMatch)return{type:'url',url:urlMatch[0]};
-  const searchKw=['調べて','検索して','最新','ニュース','今日の','何が起きて','について教えて','情報','build','mod','攻略'];
-  if(searchKw.some(k=>msg.includes(k)))return{type:'search',query:msg};
-  return{type:'chat'};
-}
+// SEARCH
+async function webSearch(query){if(!tk)return null;try{const res=await fetch('https://api.tavily.com/search',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${tk}`},body:JSON.stringify({query,max_results:5,search_depth:'basic',include_answer:true})});if(!res.ok)return null;const data=await res.json();let r='';if(data.answer)r+=`【要約】${data.answer}\n\n`;if(data.results?.length)r+=data.results.map(x=>`【${x.title}】\n${x.content}\nURL: ${x.url}`).join('\n\n');return r||null;}catch{return null;}}
+async function fetchURL(url){if(!tk)return null;try{const res=await fetch('https://api.tavily.com/extract',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${tk}`},body:JSON.stringify({urls:[url],include_images:false})});if(!res.ok)return null;const data=await res.json();return(data.results?.[0]?.raw_content||data.results?.[0]?.content||'').substring(0,4000)||null;}catch{return null;}}
+function detectIntent(msg){const urlMatch=msg.match(/https?:\/\/[^\s\u3000-\u9fff]+/);if(urlMatch)return{type:'url',url:urlMatch[0]};const kw=['調べて','検索して','最新','ニュース','今日の','何が起きて','について教えて','情報','build','mod','攻略'];if(kw.some(k=>msg.includes(k)))return{type:'search',query:msg};return{type:'chat'};}
 
-// AUTO ANALYSIS after conversation
-async function autoAnalyze(userMsg,assistantReply){
+// AUTO ANALYZE
+async function autoAnalyze(userMsg,reply){
   if(!ck)return;
   try{
-    const analyzePrompt=`以下の会話からおしん様に関する重要な情報を抽出してください。
+    const prompt=`以下の会話からおしん様に関する重要な情報を抽出してください。
 
-ユーザーの発言:「${userMsg}」
-アシスタントの返答:「${assistantReply.substring(0,500)}」
+ユーザー:「${userMsg}」
+返答:「${reply.substring(0,300)}」
 
-既存の記憶:${buildMemoryContext()}
-
-以下の形式でJSONのみ返してください（情報がなければ空配列）:
-{
-  "profile": ["プロフィール情報（名前・年齢・性格など）"],
-  "game": ["ゲーム関連情報（使用フレーム・ビルドなど）"],
-  "work": ["仕事・プロジェクト関連"],
-  "misc": ["その他重要情報"]
-}`;
-    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ck,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:500,messages:[{role:'user',content:analyzePrompt}]})});
+以下の形式でJSONのみ返してください:
+{"profile":[],"game":[],"work":[],"misc":[]}`;
+    const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ck,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:300,messages:[{role:'user',content:prompt}]})});
     if(!res.ok)return;
     const data=await res.json();
     const text=data.content?.[0]?.text||'';
-    const jsonMatch=text.match(/\{[\s\S]*\}/);
-    if(!jsonMatch)return;
-    const parsed=JSON.parse(jsonMatch[0]);
-    Object.entries(parsed).forEach(([cat,items])=>{
-      if(Array.isArray(items))items.forEach(item=>{if(item&&item.trim())addMemWithCategory(item.trim(),cat);});
-    });
+    const jm=text.match(/\{[\s\S]*\}/);
+    if(!jm)return;
+    const parsed=JSON.parse(jm[0]);
+    Object.entries(parsed).forEach(([cat,items])=>{if(Array.isArray(items))items.forEach(item=>{if(item&&item.trim())addMemWithCategory(item.trim(),cat);});});
   }catch{}
 }
 
-const CS=`あなたは「おしん様」専属AIアシスタント、ジーニーです。クールで知的、かしこまった敬語。一人称「私」、呼称「おしん様」。絵文字不使用。HTMLアプリはhtmlコードブロックで囲みHTML+CSS+JS all-in-oneで完全動作。画像が送られたら詳細に分析。Web検索結果やURL内容が提供された場合は必ずそれを活用して具体的に回答する。おしん様の要望を即実行。記憶データベースの情報を積極的に活用して個人化された回答をする。`;
-const OS=`あなたは「おしん様」専属AIアシスタント、ジーニー（ChatGPTモード）です。クールで知的、かしこまった敬語。一人称「私」、呼称「おしん様」。絵文字不使用。HTMLアプリはhtmlコードブロックで囲みHTML+CSS+JS all-in-oneで完全動作。Web検索結果やURL内容が提供された場合は必ずそれを活用して具体的に回答する。おしん様の要望を即実行。`;
+const BASE_SYSTEM=`あなたは「おしん様」専属AIアシスタント、ジーニーです。クールで知的、かしこまった敬語。一人称「私」、呼称「おしん様」。絵文字不使用。HTMLアプリはhtmlコードブロックで囲みHTML+CSS+JS all-in-oneで完全動作。画像が送られたら詳細に分析。Web検索結果やURL内容が提供された場合は必ずそれを活用して具体的に回答する。記憶データベースの情報を積極的に活用。おしん様の要望を即実行。`;
+const OS=`あなたは「おしん様」専属AIアシスタント、ジーニー（ChatGPTモード）です。クールで知的、かしこまった敬語。一人称「私」、呼称「おしん様」。絵文字不使用。HTMLアプリはhtmlコードブロックで囲みHTML+CSS+JS all-in-oneで完全動作。Web検索結果やURL内容が提供された場合は必ずそれを活用して回答する。おしん様の要望を即実行。`;
+
+function buildSystemPrompt(){
+  let sys=BASE_SYSTEM;
+  if(currentProjectId){const p=getProj(currentProjectId);if(p&&p.prompt)sys+=`\n\n【現在のプロジェクト: ${p.name}】\n${p.prompt}`;}
+  sys+=buildMemoryContext();
+  return sys;
+}
 
 function setAI(a){ai=a;['auto','claude','openai'].forEach(x=>document.getElementById('tab-'+x).classList.toggle('active',x===a));}
 function decideAI(msg){if(ai!=='auto')return ai;if(!ok)return'claude';const kw=['chatgpt','gpt','openai','別の意見','両方'];if(kw.some(k=>msg.toLowerCase().includes(k)))return'openai';return'claude';}
@@ -476,11 +516,11 @@ function renderImgBar(){const bar=document.getElementById('imgbar');if(!imgs.len
 function removeImg(i){imgs.splice(i,1);renderImgBar();}
 function qs(t){document.getElementById('ui').value=t;send();}
 
-function newChat(){const id='s'+Date.now();const s={id,title:'新しい会話',messages:[],hist:[],created:Date.now()};sessions.unshift(s);saveSessions(sessions);currentSessionId=id;renderSessions();clearMessages();closeSidebar();}
-function loadSession(id){const s=sessions.find(x=>x.id===id);if(!s)return;currentSessionId=id;renderSessions();clearMessages();s.messages.forEach(m=>restoreMsg(m));closeSidebar();}
+function newChat(){const id='s'+Date.now();const s={id,title:'新しい会話',messages:[],hist:[],projId:currentProjectId,created:Date.now()};sessions.unshift(s);saveSessions(sessions);currentSessionId=id;renderSessions();clearMessages();closeSidebar();}
+function loadSession(id){const s=sessions.find(x=>x.id===id);if(!s)return;currentSessionId=id;if(s.projId&&s.projId!==currentProjectId)selectProject(s.projId);renderSessions();clearMessages();s.messages.forEach(m=>restoreMsg(m));closeSidebar();}
 function deleteSession(id){sessions=sessions.filter(x=>x.id!==id);saveSessions(sessions);if(currentSessionId===id){currentSessionId=null;clearMessages();}renderSessions();}
 function getCurrentSession(){return sessions.find(x=>x.id===currentSessionId);}
-function renderSessions(){const list=document.getElementById('sessionsList');list.innerHTML=sessions.length?sessions.map(s=>`<div class="session-item${s.id===currentSessionId?' active':''}" onclick="loadSession('${s.id}')"><div class="session-title">${s.title}</div><button class="session-del" onclick="event.stopPropagation();deleteSession('${s.id}')">✕</button></div>`).join(''):'<div style="padding:1rem;font-size:0.7rem;color:#333;text-align:center;">会話履歴なし</div>';}
+function renderSessions(){const list=document.getElementById('sessionsList');list.innerHTML=sessions.length?sessions.map(s=>`<div class="session-item${s.id===currentSessionId?' active':''}" onclick="loadSession('${s.id}')"><div class="session-title">${s.title}</div><button class="session-del" onclick="event.stopPropagation();deleteSession('${s.id}')">✕</button></div>`).join(''):'<div style="padding:0.8rem 0.5rem;font-size:0.65rem;color:#333;text-align:center;">会話履歴なし</div>';}
 function clearMessages(){const msgs=document.getElementById('messages'),typing=document.getElementById('typing');msgs.innerHTML='';msgs.appendChild(typing);}
 function restoreMsg(m){const typing=document.getElementById('typing'),msgs=document.getElementById('messages');const wrap=document.createElement('div');wrap.className=`mwrap ${m.role}${m.aiType==='openai'?' gpt':''}`;const name=document.createElement('div');name.className='mname';name.textContent=m.role==='user'?'おしん様':m.aiType==='openai'?'GENIE / ChatGPT':'GENIE / Claude';wrap.appendChild(name);const bubble=document.createElement('div');bubble.className='mbubble';bubble.textContent=m.text;if(m.img){const img=document.createElement('img');img.src=m.img;bubble.appendChild(img);}wrap.appendChild(bubble);if(m.code)addCodeActions(wrap,m.code);msgs.insertBefore(wrap,typing);}
 function toggleSidebar(){const sb=document.getElementById('sidebar'),ov=document.getElementById('overlay');if(sb.classList.contains('open')){sb.classList.remove('open');ov.classList.remove('show');}else{sb.classList.add('open');ov.classList.add('show');}}
@@ -490,21 +530,16 @@ window.onload=()=>{
   const sk=localStorage.getItem('ogck'),so=localStorage.getItem('ogok'),sg=localStorage.getItem('oggk'),st=localStorage.getItem('ogtk');
   if(sk){ck=sk;ok=so||'';gk=sg||'';tk=st||'';showMain();}
   document.getElementById('mi').addEventListener('keydown',e=>{if(e.key==='Enter')addMemMan();});
-  updateMemCount();
-  sessions=getSessions();renderSessions();
+  updateMemCount();sessions=getSessions();renderSessions();renderProjects();
 };
-
 function saveKeys(){
   const k=document.getElementById('ck').value.trim(),o=document.getElementById('ok').value.trim(),g=document.getElementById('gk').value.trim(),t=document.getElementById('tk').value.trim();
   if(!k.startsWith('sk-ant-')){alert('AnthropicキーはSK-ant-で始まります');return;}
   localStorage.setItem('ogck',k);if(o)localStorage.setItem('ogok',o);if(g)localStorage.setItem('oggk',g);if(t)localStorage.setItem('ogtk',t);
   ck=k;ok=o;gk=g;tk=t;showMain();
 }
-function showMain(){
-  document.getElementById('setup').style.display='none';document.getElementById('main').style.display='flex';
-  if(!ok)document.getElementById('tab-openai').style.opacity='0.4';
-  sessions=getSessions();renderSessions();
-}
+function showMain(){document.getElementById('setup').style.display='none';document.getElementById('main').style.display='flex';if(!ok)document.getElementById('tab-openai').style.opacity='0.4';sessions=getSessions();renderSessions();renderProjects();}
+
 function openMem(){renderMems();document.getElementById('memoryModal').classList.add('show');}
 function closeMem(){document.getElementById('memoryModal').classList.remove('show');}
 function addMemMan(){const i=document.getElementById('mi');const t=i.value.trim();if(!t)return;addMemWithCategory(t,'misc');i.value='';renderMems();}
@@ -512,14 +547,8 @@ function renderMems(){
   const l=document.getElementById('memList');
   const cats=[{key:'profile',label:'プロフィール'},{key:'game',label:'ゲーム情報'},{key:'work',label:'仕事・プロジェクト'},{key:'misc',label:'その他'}];
   let html='';
-  cats.forEach(({key,label})=>{
-    const mems=getMemsByCategory(key);
-    if(mems.length){
-      html+=`<div class="mem-section">— ${label} —</div>`;
-      html+=mems.map((x,i)=>`<div class="memitem"><div class="memtext">${x.t}</div><div class="memmeta"><div class="memdate">${x.d}</div><button class="memdel" onclick="delMemCat('${key}',${i})">削除</button></div></div>`).join('');
-    }
-  });
-  l.innerHTML=html||'<div class="emptymem">まだ記憶がありません。会話を続けると自動で学習します。</div>';
+  cats.forEach(({key,label})=>{const mems=getMemsByCategory(key);if(mems.length){html+=`<div class="mem-section">— ${label} —</div>`;html+=mems.map((x,i)=>`<div class="memitem"><div class="memtext">${x.t}</div><div class="memmeta"><div class="memdate">${x.d}</div><button class="memdel" onclick="delMemCat('${key}',${i})">削除</button></div></div>`).join('');}});
+  l.innerHTML=html||'<div class="emptymem">まだ記憶がありません。</div>';
 }
 function delMemCat(cat,idx){const m=getMemsByCategory(cat);m.splice(idx,1);saveMemsByCategory(cat,m);renderMems();}
 
@@ -544,7 +573,7 @@ async function deployCode(code,appName){
 function deployCurrentCode(){if(prevCode)deployCode(prevCode,'app');}
 function openDeploy(){renderDeployedApps();document.getElementById('deployModal').classList.add('show');}
 function closeDeployModal(){document.getElementById('deployModal').classList.remove('show');}
-function renderDeployedApps(){const apps=getDeployedApps(),el=document.getElementById('deployedApps');if(!apps.length){el.innerHTML='<div style="color:#333;font-size:0.75rem;text-align:center;padding:1rem;">まだデプロイしたアプリはありません</div>';return;}el.innerHTML=apps.map(a=>`<div class="deployed-app-item"><div class="app-name">${a.name}</div><a href="${a.url}" target="_blank">${a.url}</a><div class="app-date">${a.date}</div></div>`).join('');}
+function renderDeployedApps(){const apps=getDeployedApps(),el=document.getElementById('deployedApps');if(!apps.length){el.innerHTML='<div style="color:#333;font-size:0.72rem;text-align:center;padding:1rem;">まだデプロイしたアプリはありません</div>';return;}el.innerHTML=apps.map(a=>`<div class="deployed-app-item"><div class="app-name">${a.name}</div><a href="${a.url}" target="_blank">${a.url}</a><div class="app-date">${a.date}</div></div>`).join('');}
 
 function addCodeActions(wrap,code){
   const a=document.createElement('div');a.className='mactions';
@@ -585,24 +614,18 @@ async function send(){
   let extraContext='';
   if(tk&&msg){
     const intent=detectIntent(msg);
-    if(intent.type==='url'){
-      tlabel.textContent='🌐 URL読み込み中...';
-      const content=await fetchURL(intent.url);
-      if(content){extraContext=`\n\n【取得したURL内容: ${intent.url}】\n${content}`;addMsg(`🌐 URLを読み込みました`,'assistant','',null,null,false);}
-    }else if(intent.type==='search'){
-      tlabel.textContent='🔍 Web検索中...';
-      const results=await webSearch(msg);
-      if(results){extraContext=`\n\n【Web検索結果】\n${results}`;addMsg(`🔍 Web検索完了`,'assistant','',null,null,false);}
-    }
+    if(intent.type==='url'){tlabel.textContent='🌐 URL読み込み中...';const c=await fetchURL(intent.url);if(c){extraContext=`\n\n【取得したURL内容: ${intent.url}】\n${c}`;addMsg(`🌐 URLを読み込みました`,'assistant','',null,null,false);}}
+    else if(intent.type==='search'){tlabel.textContent='🔍 Web検索中...';const r=await webSearch(msg);if(r){extraContext=`\n\n【Web検索結果】\n${r}`;addMsg(`🔍 Web検索完了`,'assistant','',null,null,false);}}
     tlabel.textContent=aiType==='openai'?'GENIE / ChatGPT...':'GENIE / Claude Sonnet...';
   }
 
-  const mc=buildMemoryContext(),s=getCurrentSession(),hist=s?s.hist||[]:[];
+  const sysPrompt=buildSystemPrompt();
+  const s=getCurrentSession(),hist=s?s.hist||[]:[];
   try{
     let reply='';
     const fullMsg=extraContext?`${msg}\n\n以下の情報を参考にして詳しく回答してください：${extraContext}`:msg;
     if(aiType==='openai'&&ok){
-      const omsg=[{role:'system',content:OS+mc},...hist,{role:'user',content:fullMsg}];
+      const omsg=[{role:'system',content:OS+buildMemoryContext()},...hist,{role:'user',content:fullMsg}];
       const res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+ok},body:JSON.stringify({model:MODEL_GPT,max_tokens:4000,messages:omsg})});
       if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
       const data=await res.json();reply=data.choices?.[0]?.message?.content||'';
@@ -612,7 +635,7 @@ async function send(){
       if(curImgs.length)curImgs.forEach(img=>content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:img.split(',')[1]}}));
       content.push({type:'text',text:fullMsg});
       const cmsg=[...hist,{role:'user',content:content.length===1&&!curImgs.length?fullMsg:content}];
-      const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ck,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:MODEL_CLAUDE,max_tokens:4000,system:CS+mc,messages:cmsg})});
+      const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ck,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:MODEL_CLAUDE,max_tokens:4000,system:sysPrompt,messages:cmsg})});
       if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
       const data=await res.json();reply=data.content?.map(b=>b.text||'').join('')||'';
       hist.push({role:'user',content:msg||'[画像]'},{role:'assistant',content:reply});
@@ -624,7 +647,6 @@ async function send(){
     const code=cm?.[1]?.trim()||'';
     addMsg(dt,'assistant',code,aiType,null);
     if(code){prevCode=code;showPrev(code);}
-    // 自動分析（バックグラウンドで実行）
     if(msg)autoAnalyze(msg,reply);
   }catch(e){document.getElementById('typing').style.display='none';addMsg(`申し訳ございません。エラーが発生いたしました。\n\n${e.message}`,'assistant','',aiType,null);}
   loading=false;btn.disabled=false;
