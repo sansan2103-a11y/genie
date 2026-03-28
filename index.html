@@ -513,4 +513,170 @@ async function autoAnalyze(userMsg,reply){
     if(!res.ok)return;
     const data=await res.json();const text=data.content?.[0]?.text||'';const jm=text.match(/\{[\s\S]*\}/);if(!jm)return;
     const parsed=JSON.parse(jm[0]);
-    Object.entries(parsed).forEach(([cat,items])=>{if(Array.isArray(items))items.forEach(item=​​​​​​​​​​​​​​​​
+    Object.entries(parsed).forEach(([cat,items])=>{if(Array.isArray(items))items.forEach(item=>{if(item&&item.trim())addMemWithCategory(item.trim(),cat);});});
+  }catch{}
+}
+
+const BASE_SYSTEM=`あなたは「おしん様」専属AIアシスタント、ジーニーです。クールで知的、かしこまった敬語。一人称「私」、呼称「おしん様」。絵文字不使用。HTMLアプリはhtmlコードブロックで囲みHTML+CSS+JS all-in-oneで完全動作。画像・ファイルが送られたら詳細に分析。Web検索結果やURL内容が提供された場合は必ずそれを活用。記憶データベースとプロジェクト情報を積極的に活用。おしん様の要望を即実行。`;
+const OS=`あなたは「おしん様」専属AIアシスタント、ジーニー（ChatGPTモード）です。クールで知的、かしこまった敬語。一人称「私」、呼称「おしん様」。絵文字不使用。HTMLアプリはhtmlコードブロックで囲みHTML+CSS+JS all-in-oneで完全動作。Web検索結果やURL内容が提供された場合は必ずそれを活用。おしん様の要望を即実行。`;
+
+function buildSystemPrompt(){
+  let sys=BASE_SYSTEM;
+  if(currentProjectId){
+    const p=getProj(currentProjectId);
+    if(p){
+      if(p.prompt)sys+=`\n\n【現在のプロジェクト: ${p.name}】\n${p.prompt}`;
+      if(p.memo)sys+=`\n\n【プロジェクトメモ】\n${p.memo}`;
+    }
+  }
+  sys+=buildMemoryContext();
+  return sys;
+}
+
+function setAI(a){ai=a;['auto','claude','openai'].forEach(x=>document.getElementById('tab-'+x).classList.toggle('active',x===a));}
+function decideAI(msg){if(ai!=='auto')return ai;if(!ok)return'claude';const kw=['chatgpt','gpt','openai','別の意見','両方'];if(kw.some(k=>msg.toLowerCase().includes(k)))return'openai';return'claude';}
+function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
+function onKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
+function onImg(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{imgs.push(ev.target.result);renderImgBar();};r.readAsDataURL(f);e.target.value='';}
+function qs(t){document.getElementById('ui').value=t;send();}
+
+function newChat(){const id='s'+Date.now();const s={id,title:'新しい会話',messages:[],hist:[],projId:currentProjectId,created:Date.now()};sessions.unshift(s);saveSessions(sessions);currentSessionId=id;renderSessions();clearMessages();closeSidebar();}
+function loadSession(id){const s=sessions.find(x=>x.id===id);if(!s)return;currentSessionId=id;if(s.projId&&s.projId!==currentProjectId)selectProject(s.projId);renderSessions();clearMessages();s.messages.forEach(m=>restoreMsg(m));closeSidebar();}
+function deleteSession(id){sessions=sessions.filter(x=>x.id!==id);saveSessions(sessions);if(currentSessionId===id){currentSessionId=null;clearMessages();}renderSessions();}
+function getCurrentSession(){return sessions.find(x=>x.id===currentSessionId);}
+function renderSessions(){const list=document.getElementById('sessionsList');list.innerHTML=sessions.length?sessions.map(s=>`<div class="session-item${s.id===currentSessionId?' active':''}" onclick="loadSession('${s.id}')"><div class="session-title">${s.title}</div><button class="session-del" onclick="event.stopPropagation();deleteSession('${s.id}')">✕</button></div>`).join(''):'<div style="padding:0.8rem 0.5rem;font-size:0.65rem;color:#333;text-align:center;">会話履歴なし</div>';}
+function clearMessages(){const msgs=document.getElementById('messages'),typing=document.getElementById('typing');msgs.innerHTML='';msgs.appendChild(typing);}
+function restoreMsg(m){const typing=document.getElementById('typing'),msgs=document.getElementById('messages');const wrap=document.createElement('div');wrap.className=`mwrap ${m.role}${m.aiType==='openai'?' gpt':''}`;const name=document.createElement('div');name.className='mname';name.textContent=m.role==='user'?'おしん様':m.aiType==='openai'?'GENIE / ChatGPT':'GENIE / Claude';wrap.appendChild(name);const bubble=document.createElement('div');bubble.className='mbubble';bubble.textContent=m.text;if(m.img){const img=document.createElement('img');img.src=m.img;bubble.appendChild(img);}wrap.appendChild(bubble);if(m.code)addCodeActions(wrap,m.code);msgs.insertBefore(wrap,typing);}
+function toggleSidebar(){const sb=document.getElementById('sidebar'),ov=document.getElementById('overlay');if(sb.classList.contains('open')){sb.classList.remove('open');ov.classList.remove('show');}else{sb.classList.add('open');ov.classList.add('show');}}
+function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
+
+window.onload=()=>{
+  const sk=localStorage.getItem('ogck'),so=localStorage.getItem('ogok'),sg=localStorage.getItem('oggk'),st=localStorage.getItem('ogtk');
+  if(sk){ck=sk;ok=so||'';gk=sg||'';tk=st||'';showMain();}
+  document.getElementById('mi').addEventListener('keydown',e=>{if(e.key==='Enter')addMemMan();});
+  updateMemCount();sessions=getSessions();renderSessions();renderProjects();
+};
+function saveKeys(){
+  const k=document.getElementById('ck').value.trim(),o=document.getElementById('ok').value.trim(),g=document.getElementById('gk').value.trim(),t=document.getElementById('tk').value.trim();
+  if(!k.startsWith('sk-ant-')){alert('AnthropicキーはSK-ant-で始まります');return;}
+  localStorage.setItem('ogck',k);if(o)localStorage.setItem('ogok',o);if(g)localStorage.setItem('oggk',g);if(t)localStorage.setItem('ogtk',t);
+  ck=k;ok=o;gk=g;tk=t;showMain();
+}
+function showMain(){document.getElementById('setup').style.display='none';document.getElementById('main').style.display='flex';if(!ok)document.getElementById('tab-openai').style.opacity='0.4';sessions=getSessions();renderSessions();renderProjects();}
+
+function openMem(){renderMems();document.getElementById('memoryModal').classList.add('show');}
+function closeMem(){document.getElementById('memoryModal').classList.remove('show');}
+function addMemMan(){const i=document.getElementById('mi');const t=i.value.trim();if(!t)return;addMemWithCategory(t,'misc');i.value='';renderMems();}
+function renderMems(){const l=document.getElementById('memList');const cats=[{key:'profile',label:'プロフィール'},{key:'game',label:'ゲーム情報'},{key:'work',label:'仕事・プロジェクト'},{key:'misc',label:'その他'}];let html='';cats.forEach(({key,label})=>{const mems=getMemsByCategory(key);if(mems.length){html+=`<div class="mem-section">— ${label} —</div>`;html+=mems.map((x,i)=>`<div class="memitem"><div class="memtext">${x.t}</div><div class="memmeta"><div class="memdate">${x.d}</div><button class="memdel" onclick="delMemCat('${key}',${i})">削除</button></div></div>`).join('');}});l.innerHTML=html||'<div class="emptymem">まだ記憶がありません。</div>';}
+function delMemCat(cat,idx){const m=getMemsByCategory(cat);m.splice(idx,1);saveMemsByCategory(cat,m);renderMems();}
+
+async function deployCode(code,appName){
+  if(!gk){alert('GitHubトークンが設定されていません');return;}
+  document.getElementById('deployModal').classList.add('show');
+  const status=document.getElementById('deployStatus'),bar=document.getElementById('deployBar');
+  const filename=`${(appName||'app').replace(/\s/g,'-')}-${Date.now()}.html`;
+  status.textContent='GitHubにアップロード中...';bar.style.width='30%';
+  try{
+    const content=btoa(unescape(encodeURIComponent(code)));
+    const res=await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${filename}`,{method:'PUT',headers:{'Authorization':`token ${gk}`,'Content-Type':'application/json'},body:JSON.stringify({message:`Deploy ${filename}`,content})});
+    if(!res.ok){const e=await res.json();throw new Error(e.message||'Upload failed');}
+    bar.style.width='70%';status.textContent='公開処理中...';
+    await new Promise(r=>setTimeout(r,3000));
+    bar.style.width='100%';
+    const url=`https://${GH_USER}.github.io/${GH_REPO}/${filename}`;
+    status.innerHTML=`✅ デプロイ完了！\n\n${url}`;
+    const apps=getDeployedApps();apps.unshift({name:appName||filename,url,date:new Date().toLocaleDateString('ja-JP')});saveDeployedApps(apps);renderDeployedApps();
+  }catch(e){status.textContent=`❌ エラー: ${e.message}`;}
+}
+function deployCurrentCode(){if(prevCode)deployCode(prevCode,'app');}
+function openDeploy(){renderDeployedApps();document.getElementById('deployModal').classList.add('show');}
+function closeDeployModal(){document.getElementById('deployModal').classList.remove('show');}
+function renderDeployedApps(){const apps=getDeployedApps(),el=document.getElementById('deployedApps');if(!apps.length){el.innerHTML='<div style="color:#333;font-size:0.72rem;text-align:center;padding:1rem;">まだデプロイしたアプリはありません</div>';return;}el.innerHTML=apps.map(a=>`<div class="deployed-app-item"><div class="app-name">${a.name}</div><a href="${a.url}" target="_blank">${a.url}</a><div class="app-date">${a.date}</div></div>`).join('');}
+
+function addCodeActions(wrap,code){
+  const a=document.createElement('div');a.className='mactions';
+  const p=document.createElement('button');p.className='pbtn';p.textContent='プレビュー';p.onclick=()=>showPrev(code);
+  const dep=document.createElement('button');dep.className='deploy-btn';dep.textContent='🚀 デプロイ';dep.onclick=()=>deployCode(code,'app');
+  const d=document.createElement('button');d.className='dbtn';d.textContent='HTMLで保存';d.onclick=()=>dlCode(code);
+  a.appendChild(p);a.appendChild(dep);a.appendChild(d);wrap.appendChild(a);
+}
+
+function addMsg(text,role,code,aiType,imgSrc,save=true){
+  const typing=document.getElementById('typing'),msgs=document.getElementById('messages');
+  const wrap=document.createElement('div');wrap.className=`mwrap ${role}${aiType==='openai'?' gpt':''}`;
+  const name=document.createElement('div');name.className='mname';name.textContent=role==='user'?'おしん様':aiType==='openai'?'GENIE / ChatGPT':'GENIE / Claude';
+  wrap.appendChild(name);
+  const bubble=document.createElement('div');bubble.className='mbubble';bubble.textContent=text;
+  if(imgSrc){const img=document.createElement('img');img.src=imgSrc;bubble.appendChild(img);}
+  wrap.appendChild(bubble);
+  if(code)addCodeActions(wrap,code);
+  msgs.insertBefore(wrap,typing);msgs.scrollTop=msgs.scrollHeight;
+  if(save){let s=getCurrentSession();if(!s){newChat();s=getCurrentSession();}if(!s.messages)s.messages=[];s.messages.push({role,text,code,aiType,img:imgSrc});if(s.messages.length===1&&role==='user')s.title=text.substring(0,20)||(imgSrc?'画像の会話':'新しい会話');saveSessions(sessions);renderSessions();}
+}
+
+async function send(){
+  const input=document.getElementById('ui'),btn=document.getElementById('sendBtn'),msg=input.value.trim();
+  if((!msg&&!imgs.length&&!attachedFiles.length)||loading)return;
+  if(!ck){alert('Anthropic APIキーが設定されていません。右上の🔑から追加してください。');return;}
+  if(!currentSessionId)newChat();
+  const curImgs=[...imgs],curFiles=[...attachedFiles];
+  input.value='';input.style.height='auto';imgs=[];attachedFiles=[];renderImgBar();renderFileBar();
+  loading=true;btn.disabled=true;
+  addMsg(msg,'user','',null,curImgs[0]||null);
+  const aiType=decideAI(msg);
+  const tlabel=document.getElementById('tlabel');
+  tlabel.textContent=aiType==='openai'?'GENIE / ChatGPT...':'GENIE / Claude Sonnet...';
+  document.getElementById('typing').style.display='flex';
+  document.getElementById('messages').scrollTop=999999;
+
+  let extraContext='';
+  if(tk&&msg){
+    const intent=detectIntent(msg);
+    if(intent.type==='url'){tlabel.textContent='🌐 URL読み込み中...';const c=await fetchURL(intent.url);if(c){extraContext+=`\n\n【URL内容: ${intent.url}】\n${c}`;addMsg('🌐 URLを読み込みました','assistant','',null,null,false);}}
+    else if(intent.type==='search'){tlabel.textContent='🔍 Web検索中...';const r=await webSearch(msg);if(r){extraContext+=`\n\n【Web検索結果】\n${r}`;addMsg('🔍 Web検索完了','assistant','',null,null,false);}}
+    tlabel.textContent=aiType==='openai'?'GENIE / ChatGPT...':'GENIE / Claude Sonnet...';
+  }
+  curFiles.forEach(f=>{if(f.type==='text')extraContext+=`\n\n【添付: ${f.name}】\n${f.content}`;});
+
+  const sysPrompt=buildSystemPrompt();
+  const s=getCurrentSession(),hist=s?s.hist||[]:[];
+  try{
+    let reply='';
+    const fullMsg=extraContext?`${msg}\n\n以下を参考に回答してください：${extraContext}`:msg;
+    if(aiType==='openai'&&ok){
+      const omsg=[{role:'system',content:OS+buildMemoryContext()},...hist,{role:'user',content:fullMsg}];
+      const res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+ok},body:JSON.stringify({model:MODEL_GPT,max_tokens:4000,messages:omsg})});
+      if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
+      const data=await res.json();reply=data.choices?.[0]?.message?.content||'';
+      hist.push({role:'user',content:msg},{role:'assistant',content:reply});
+    }else{
+      const content=[];
+      if(curImgs.length)curImgs.forEach(img=>content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:img.split(',')[1]}}));
+      curFiles.forEach(f=>{if(f.type==='pdf')content.push({type:'document',source:{type:'base64',media_type:'application/pdf',data:f.base64}});});
+      content.push({type:'text',text:fullMsg||'ファイルを分析してください'});
+      const userContent=content.length===1&&!curImgs.length&&!curFiles.length?fullMsg:content;
+      const cmsg=[...hist,{role:'user',content:userContent}];
+      const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ck,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:MODEL_CLAUDE,max_tokens:4000,system:sysPrompt,messages:cmsg})});
+      if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
+      const data=await res.json();reply=data.content?.map(b=>b.text||'').join('')||'';
+      hist.push({role:'user',content:msg||'[ファイル]'},{role:'assistant',content:reply});
+    }
+    if(s)s.hist=hist;saveSessions(sessions);
+    document.getElementById('typing').style.display='none';
+    const cm=reply.match(/```html\n?([\s\S]*?)```/);
+    const dt=reply.replace(/```html[\s\S]*?```/g,'').trim();
+    const code=cm?.[1]?.trim()||'';
+    addMsg(dt,'assistant',code,aiType,null);
+    if(code){prevCode=code;showPrev(code);}
+    if(msg)autoAnalyze(msg,reply);
+  }catch(e){document.getElementById('typing').style.display='none';addMsg(`申し訳ございません。エラーが発生いたしました。\n\n${e.message}`,'assistant','',aiType,null);}
+  loading=false;btn.disabled=false;
+}
+
+function showPrev(code){prevCode=code;document.getElementById('pf').srcdoc=code;document.getElementById('previewModal').classList.add('show');}
+function closePrev(){document.getElementById('previewModal').classList.remove('show');}
+function dlPreview(){dlCode(prevCode);}
+function dlCode(code){const b=new Blob([code],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='oshin_app.html';a.click();}
+</script>
+</body>
+</html>
