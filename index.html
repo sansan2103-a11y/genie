@@ -413,11 +413,10 @@ async function callNovelAI(prompt) {
   const key = state.apiKey;
   if (!key) throw new Error('APIキーが設定されていません');
 
-  // Build parameters (NovelAI format)
   const params = {
     max_length: 150,
-    min_length: 1,
-    temperature: 1.05,
+    min_length: 10,
+    temperature: 1.0,
     top_p: 0.95,
     top_k: 85,
     repetition_penalty: 1.05,
@@ -426,37 +425,36 @@ async function callNovelAI(prompt) {
     use_string: true,
   };
 
-  const body = {
-    input: prompt,
-    model: MODEL,
-    parameters: params,
-  };
+  // Generate and auto-continue until sentence ends (max 3 calls)
+  let fullOutput = '';
+  let currentPrompt = prompt;
 
-  const res = await fetch(PROXY, {
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      'Authorization': 'Bearer ' + key,
-    },
-    body: JSON.stringify(body),
-  });
+  for (let i = 0; i < 3; i++) {
+    const body = { input: currentPrompt, model: MODEL, parameters: params };
+    const res = await fetch(PROXY, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + key },
+      body: JSON.stringify(body),
+    });
+    if (!res.ok) {
+      const errText = await res.text().catch(() => '');
+      throw new Error(`HTTP ${res.status}: ${errText.slice(0, 200)}`);
+    }
+    const data = await res.json();
+    if (data.event === 'error') throw new Error(JSON.stringify(data));
+    const chunk = data.output !== undefined ? data.output : (data.text || '');
+    fullOutput += chunk;
 
-  if (!res.ok) {
-    const errText = await res.text().catch(() => '');
-    throw new Error(`HTTP ${res.status}: ${errText.slice(0, 200)}`);
+    // Stop if we hit sentence-ending punctuation
+    if (/[。！？…」』]$/.test(fullOutput.trim())) break;
+    // Also stop if second call and we have enough text
+    if (i >= 1 && fullOutput.length > 100) break;
+
+    // Continue from where we left off
+    currentPrompt = currentPrompt + chunk;
   }
 
-  const data = await res.json();
-
-  // NovelAI returns { output: "text" }
-  if (data.output !== undefined) return data.output.trim();
-
-  // fallback
-  if (data.text) return data.text.trim();
-  if (typeof data === 'string') return data.trim();
-
-  console.error('Unexpected NovelAI response:', data);
-  throw new Error('予期しないレスポンス形式: ' + JSON.stringify(data).slice(0, 200));
+  return fullOutput.trim();
 }
 
 // ─── BUILD PROMPT ─────────────────────────────────
@@ -471,16 +469,16 @@ function buildPrompt(userAction) {
     return `これは${heroText}の物語だ。舞台は${worldText}。\n　`;
   }
 
-  // Trim last AI to 150 chars max
-  const trimmed = lastAI.length > 150 ? '……' + lastAI.slice(-150) : lastAI;
+  // Trim context to last 200 chars
+  const trimmed = lastAI.length > 200 ? lastAI.slice(-200) : lastAI;
 
   if (!userAction) {
     return trimmed + '\n　';
   }
 
-  // State the action as COMPLETED FACT, then Kayra continues what happened next
-  // This is the most reliable way to force Kayra to reflect the action
-  return trimmed + `\n　${userAction}た。`;
+  // Make user action the undeniable next event
+  // State it as a new paragraph fact - Kayra MUST continue from this
+  return trimmed + `\n\n　${userAction}。`;
 }
 
 // ─── PARSE AI RESPONSE ────────────────────────────
