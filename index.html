@@ -424,7 +424,6 @@ async function callNovelAI(prompt) {
     repetition_penalty_range: 2048,
     repetition_penalty_slope: 0.09,
     use_string: true,
-    order: [6, 0, 4, 5, 3, 1],
   };
 
   const body = {
@@ -465,34 +464,23 @@ function buildPrompt(userAction) {
   const heroText = state.hero || '名もなき冒険者';
   const worldText = state.world || '剣と魔法の世界';
 
-  // Keep very short - Kayra works best with concise prompts
   const aiHistory = state.history.filter(h => h.role === 'assistant').slice(-1);
   const lastAI = aiHistory.length > 0 ? aiHistory[0].content : '';
 
-  let prompt = '';
-
   if (!lastAI) {
-    // First generation
-    prompt = `これは${heroText}の物語だ。舞台は${worldText}。\n　`;
-  } else {
-    // Last story chunk, then user action as sentence start
-    // Trim to last 200 chars to stay within context
-    const trimmed = lastAI.length > 200 ? lastAI.slice(-200) : lastAI;
-    prompt = trimmed + '\n　';
-
-    if (userAction) {
-      // User action becomes start of next sentence - Kayra will complete it
-      prompt += userAction;
-      // If action doesn't end with verb form, add connector
-      if (!userAction.match(/[するたいくるれるぬ]$/)) {
-        prompt += 'すると、';
-      } else {
-        prompt += '、';
-      }
-    }
+    return `これは${heroText}の物語だ。舞台は${worldText}。\n　`;
   }
 
-  return prompt;
+  // Trim last AI to 150 chars max
+  const trimmed = lastAI.length > 150 ? '……' + lastAI.slice(-150) : lastAI;
+
+  if (!userAction) {
+    return trimmed + '\n　';
+  }
+
+  // State the action as COMPLETED FACT, then Kayra continues what happened next
+  // This is the most reliable way to force Kayra to reflect the action
+  return trimmed + `\n　${userAction}た。`;
 }
 
 // ─── PARSE AI RESPONSE ────────────────────────────
