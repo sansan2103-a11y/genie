@@ -2,665 +2,943 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
-<title>Genie — おしん様専属AI</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Chronicle — AI RPG</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;900&family=IM+Fell+English:ital@0;1&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
 <style>
-*{margin:0;padding:0;box-sizing:border-box;}
-html,body{width:100%;height:100%;overflow:hidden;}
-body{font-family:-apple-system,BlinkMacSystemFont,'Hiragino Sans',sans-serif;background:#0a0a0f;color:#e8e4d8;display:flex;flex-direction:column;height:100dvh;}
-#setup{display:flex;align-items:center;justify-content:center;flex:1;padding:1.5rem;overflow-y:auto;}
-.setup-box{width:100%;max-width:420px;}
-.setup-title{text-align:center;margin-bottom:1.5rem;}
-.setup-title .label{font-size:0.6rem;letter-spacing:0.3em;color:#b8a87a;margin-bottom:0.4rem;font-family:monospace;}
-.setup-title h1{font-size:2rem;color:#e8e4d8;letter-spacing:0.05em;}
-.setup-title .sub{font-size:0.75rem;color:#555;margin-top:0.3rem;}
-.setup-card{background:#0f0f18;border:1px solid #2a2a3a;padding:1.2rem;border-radius:4px;margin-bottom:0.8rem;}
-.setup-card .card-label{font-size:0.68rem;color:#b8a87a;letter-spacing:0.1em;margin-bottom:0.6rem;font-family:monospace;}
-.setup-card input{width:100%;padding:0.65rem 0.9rem;background:#0a0a0f;border:1px solid #2a2a3a;color:#e8e4d8;font-size:0.8rem;font-family:monospace;border-radius:3px;outline:none;margin-bottom:0.4rem;}
-.setup-card input:focus{border-color:#b8a87a;}
-.setup-card .note{font-size:0.68rem;color:#444;}
-.setup-btn{width:100%;padding:0.85rem;background:#b8a87a;color:#0a0a0f;border:none;border-radius:3px;font-size:0.85rem;font-weight:bold;cursor:pointer;font-family:inherit;letter-spacing:0.05em;}
-.setup-footnote{font-size:0.65rem;color:#333;text-align:center;margin-top:0.8rem;line-height:1.7;}
-#main{display:none;flex-direction:row;height:100dvh;overflow:hidden;}
-#sidebar{width:260px;background:#06060a;border-right:1px solid #1a1a2a;display:flex;flex-direction:column;flex-shrink:0;transition:transform 0.25s ease;}
-.sidebar-header{padding:0.8rem 1rem;border-bottom:1px solid #1a1a2a;}
-.sidebar-header .logo{font-size:0.85rem;font-weight:bold;color:#e8e4d8;}
-.sidebar-header .logo span{color:#b8a87a;}
-.sidebar-section{padding:0.5rem 0.7rem 0.3rem;font-size:0.55rem;letter-spacing:0.15em;color:#444;font-family:monospace;}
-.new-btn{width:100%;padding:0.5rem;background:#0f0f18;border:1px solid #2a2a3a;color:#b8a87a;border-radius:3px;font-size:0.68rem;cursor:pointer;font-family:monospace;margin-bottom:0.4rem;}
-.proj-item{padding:0.55rem 0.7rem;border-radius:3px;cursor:pointer;font-size:0.72rem;color:#666;margin-bottom:0.2rem;display:flex;align-items:center;gap:0.3rem;}
-.proj-item:hover{background:#0f0f18;color:#aaa;}
-.proj-item.active{background:#1a1a2e;color:#e8e4d8;border-left:2px solid #b8a87a;}
-.proj-item .proj-icon{font-size:0.8rem;flex-shrink:0;}
-.proj-item .proj-name{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.proj-item .proj-edit{background:transparent;border:none;color:#333;font-size:0.65rem;cursor:pointer;padding:0.1rem 0.25rem;flex-shrink:0;}
-.proj-item .proj-edit:hover{color:#b8a87a;}
-.sessions-list{flex:1;overflow-y:auto;padding:0 0.7rem;}
-.session-item{padding:0.5rem 0.65rem;border-radius:3px;cursor:pointer;font-size:0.7rem;color:#555;margin-bottom:0.2rem;display:flex;align-items:center;justify-content:space-between;gap:0.3rem;}
-.session-item:hover{background:#0f0f18;color:#aaa;}
-.session-item.active{background:#1a1a2e;color:#e8e4d8;border-left:2px solid #b8a87a;}
-.session-title{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
-.session-del{background:transparent;border:none;color:#333;font-size:0.65rem;cursor:pointer;padding:0.1rem 0.25rem;}
-.session-del:hover{color:#ef4444;}
-.sidebar-footer{padding:0.7rem;border-top:1px solid #1a1a2a;display:flex;flex-direction:column;gap:0.35rem;}
-.side-btn{width:100%;padding:0.45rem;background:transparent;border:1px solid #2a2a3a;color:#666;border-radius:3px;font-size:0.65rem;cursor:pointer;font-family:monospace;}
-.side-btn.gold{border-color:#b8a87a;color:#b8a87a;}
-#content{flex:1;display:flex;flex-direction:column;overflow:hidden;min-width:0;}
-header{padding:0.6rem 1rem;padding-top:max(0.6rem,env(safe-area-inset-top));background:#06060a;border-bottom:1px solid #1a1a2a;display:flex;align-items:center;gap:0.4rem;flex-shrink:0;}
-.menu-btn{background:transparent;border:none;color:#555;font-size:1.1rem;cursor:pointer;padding:0.1rem 0.3rem;flex-shrink:0;}
-.title-area{flex:1;min-width:0;}
-.title-area .lbl{font-size:0.48rem;letter-spacing:0.2em;color:#b8a87a;font-family:monospace;}
-.title-area h2{font-size:0.82rem;font-weight:bold;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
-.proj-badge{font-size:0.58rem;color:#b8a87a;font-family:monospace;border:1px solid #b8a87a;padding:0.1rem 0.4rem;border-radius:2px;white-space:nowrap;cursor:pointer;}
-.hdr-right{display:flex;align-items:center;gap:0.3rem;flex-shrink:0;}
-.status-dot{width:6px;height:6px;border-radius:50%;background:#4ade80;box-shadow:0 0 5px #4ade80;}
-.hdr-btn{background:transparent;border:1px solid #1a1a2a;color:#555;padding:0.18rem 0.45rem;font-size:0.58rem;cursor:pointer;border-radius:2px;font-family:monospace;}
-.ai-bar{display:flex;background:#06060a;border-bottom:1px solid #1a1a2a;flex-shrink:0;}
-.ai-tab{flex:1;padding:0.38rem;font-size:0.62rem;border:none;background:transparent;color:#444;cursor:pointer;font-family:monospace;border-bottom:2px solid transparent;}
-.ai-tab.active{color:#b8a87a;border-bottom-color:#b8a87a;}
-#proj-indicator{display:none;background:#0d1a0d;border-bottom:1px solid #1a3a1a;padding:0.3rem 0.85rem;font-size:0.62rem;color:#4ade80;font-family:monospace;flex-shrink:0;}
-#messages{flex:1;overflow-y:auto;padding:0.85rem;display:flex;flex-direction:column;gap:0.7rem;-webkit-overflow-scrolling:touch;}
-.mwrap{display:flex;flex-direction:column;gap:0.2rem;}
-.mwrap.user{align-items:flex-end;}
-.mwrap.assistant{align-items:flex-start;}
-.mname{font-size:0.48rem;letter-spacing:0.12em;font-family:monospace;}
-.mwrap.user .mname{color:#444;}
-.mwrap.assistant .mname{color:#b8a87a;}
-.mwrap.assistant.gpt .mname{color:#74aa9c;}
-.mbubble{max-width:88%;padding:0.62rem 0.82rem;line-height:1.75;font-size:0.8rem;white-space:pre-wrap;border-radius:3px;word-break:break-word;}
-.mwrap.user .mbubble{background:#1a1a2e;border:1px solid #252540;}
-.mwrap.assistant .mbubble{background:#0d0d18;border-left:2px solid #b8a87a;color:#d8d4c4;}
-.mwrap.assistant.gpt .mbubble{border-left-color:#74aa9c;}
-.mbubble img{max-width:100%;border-radius:4px;margin-top:0.5rem;display:block;}
-.mactions{display:flex;gap:0.28rem;margin-top:0.15rem;flex-wrap:wrap;}
-.mactions button{padding:0.15rem 0.5rem;border:1px solid;background:transparent;font-size:0.58rem;cursor:pointer;border-radius:2px;font-family:monospace;}
-.pbtn{border-color:#b8a87a;color:#b8a87a;}
-.dbtn{border-color:#3a3a4a;color:#3a3a4a;}
-.deploy-btn{border-color:#4ade80;color:#4ade80;}
-#typing{display:none;flex-direction:column;align-items:flex-start;gap:0.2rem;}
-.tlabel{font-size:0.48rem;letter-spacing:0.12em;font-family:monospace;color:#b8a87a;}
-.tdots{padding:0.62rem 0.82rem;background:#0d0d18;border-left:2px solid #b8a87a;display:flex;gap:4px;align-items:center;border-radius:3px;}
-.tdots span{width:5px;height:5px;border-radius:50%;background:#b8a87a;display:inline-block;animation:fade 1.4s infinite;}
-.tdots span:nth-child(2){animation-delay:.2s;}
-.tdots span:nth-child(3){animation-delay:.4s;}
-@keyframes fade{0%,100%{opacity:.12}50%{opacity:1}}
-.file-bar{padding:0.4rem 0.82rem;background:#0d0d14;border-top:1px solid #1a1a2a;display:none;gap:0.4rem;flex-wrap:wrap;align-items:center;flex-shrink:0;}
-.file-bar.show{display:flex;}
-.file-chip{display:flex;align-items:center;gap:0.3rem;background:#1a1a2e;border:1px solid #2a2a4a;padding:0.2rem 0.5rem;border-radius:3px;font-size:0.65rem;color:#b8a87a;}
-.file-chip button{background:transparent;border:none;color:#555;cursor:pointer;font-size:0.7rem;}
-.imgprev-bar{padding:0.4rem 0.82rem;background:#0d0d14;border-top:1px solid #1a1a2a;display:none;gap:0.5rem;flex-wrap:wrap;align-items:center;flex-shrink:0;}
-.imgprev-bar.show{display:flex;}
-.imgprev-item{position:relative;}
-.imgprev-item img{width:52px;height:52px;object-fit:cover;border-radius:4px;border:1px solid #2a2a3a;}
-.imgprev-item button{position:absolute;top:-5px;right:-5px;width:17px;height:17px;border-radius:50%;background:#ef4444;border:none;color:white;font-size:9px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
-.quickbtns{padding:0 0.82rem 0.3rem;display:flex;gap:0.25rem;flex-wrap:wrap;flex-shrink:0;}
-.quickbtns button{padding:0.14rem 0.45rem;border:1px solid #1a1a2a;background:transparent;color:#444;font-size:0.58rem;cursor:pointer;border-radius:2px;font-family:inherit;}
-footer{padding:0.5rem 0.82rem;padding-bottom:max(0.5rem,env(safe-area-inset-bottom));border-top:1px solid #111120;background:#06060a;flex-shrink:0;}
-.frow{display:flex;gap:0.38rem;align-items:flex-end;}
-.file-btn,.img-btn{padding:0.48rem 0.55rem;background:#0d0d14;border:1px solid #2a2a3a;border-radius:3px;color:#666;font-size:0.85rem;cursor:pointer;flex-shrink:0;line-height:1;}
-textarea{flex:1;padding:0.48rem 0.72rem;background:#0d0d14;border:1px solid #1a1a2a;color:#e8e4d8;font-size:0.8rem;font-family:inherit;resize:none;outline:none;border-radius:3px;max-height:120px;min-height:34px;-webkit-appearance:none;}
-textarea:focus{border-color:#b8a87a;}
-textarea::placeholder{color:#2a2a3a;}
-#sendBtn{padding:0.48rem 0.82rem;background:#b8a87a;color:#0a0a0f;border:none;border-radius:3px;font-size:0.72rem;font-weight:bold;cursor:pointer;font-family:monospace;white-space:nowrap;flex-shrink:0;}
-#sendBtn:disabled{background:#111;color:#333;cursor:not-allowed;}
-#previewModal,#memoryModal,#deployModal,#apiModal,#projectModal{display:none;position:fixed;inset:0;z-index:200;background:rgba(0,0,0,0.95);flex-direction:column;}
-#previewModal.show,#memoryModal.show,#deployModal.show,#apiModal.show,#projectModal.show{display:flex;}
-.mhdr{background:#0d0d14;border-bottom:1px solid #2a2a3a;padding:0.58rem 1rem;display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
-.mhdr span{font-size:0.62rem;letter-spacing:0.1em;color:#b8a87a;font-family:monospace;}
-.mhdr div{display:flex;gap:0.32rem;}
-.mhdr button{padding:0.16rem 0.52rem;border:1px solid;background:transparent;font-size:0.58rem;cursor:pointer;border-radius:2px;font-family:monospace;}
-.btn-dl{border-color:#b8a87a;color:#b8a87a;}
-.btn-cl{border-color:#555;color:#555;}
-.btn-dep{border-color:#4ade80;color:#4ade80;}
-#pf{flex:1;border:none;background:white;}
-#memList{flex:1;overflow-y:auto;padding:0.82rem;display:flex;flex-direction:column;gap:0.42rem;}
-.mem-section{font-size:0.58rem;color:#b8a87a;font-family:monospace;letter-spacing:0.1em;margin:0.5rem 0 0.28rem;padding-bottom:0.18rem;border-bottom:1px solid #1a1a2a;}
-.memitem{background:#0f0f18;border:1px solid #2a2a3a;border-left:2px solid #b8a87a;padding:0.58rem 0.78rem;border-radius:3px;display:flex;justify-content:space-between;align-items:flex-start;gap:0.38rem;}
-.memtext{font-size:0.72rem;color:#d8d4c4;line-height:1.6;flex:1;}
-.memmeta{display:flex;flex-direction:column;align-items:flex-end;gap:0.2rem;flex-shrink:0;}
-.memdate{font-size:0.52rem;color:#444;font-family:monospace;}
-.memdel{background:transparent;border:1px solid #3a1a1a;color:#666;font-size:0.52rem;cursor:pointer;padding:0.1rem 0.3rem;border-radius:2px;font-family:monospace;}
-.memadd{padding:0.62rem 0.82rem;border-top:1px solid #1a1a2a;display:flex;gap:0.38rem;flex-shrink:0;}
-.memadd input{flex:1;padding:0.48rem 0.72rem;background:#0d0d14;border:1px solid #2a2a3a;color:#e8e4d8;font-size:0.72rem;font-family:inherit;outline:none;border-radius:3px;}
-.memadd button{padding:0.48rem 0.82rem;background:#b8a87a;color:#0a0a0f;border:none;border-radius:3px;font-size:0.68rem;font-weight:bold;cursor:pointer;font-family:monospace;white-space:nowrap;}
-.emptymem{color:#333;font-size:0.72rem;text-align:center;padding:2rem;}
-.api-content,.proj-content{flex:1;overflow-y:auto;padding:0.9rem;}
-.api-row,.proj-form{background:#0f0f18;border:1px solid #2a2a3a;border-radius:4px;padding:0.9rem;margin-bottom:0.75rem;}
-.api-label{font-size:0.65rem;color:#b8a87a;letter-spacing:0.1em;margin-bottom:0.45rem;font-family:monospace;display:flex;align-items:center;justify-content:space-between;}
-.api-status{font-size:0.58rem;padding:0.12rem 0.45rem;border-radius:10px;}
-.api-status.set{background:#0a2a0a;color:#4ade80;border:1px solid #4ade80;}
-.api-status.unset{background:#2a1a0a;color:#888;border:1px solid #333;}
-.api-input-row{display:flex;gap:0.45rem;align-items:center;}
-.api-input-row input{flex:1;padding:0.52rem 0.75rem;background:#0a0a0f;border:1px solid #2a2a3a;color:#e8e4d8;font-size:0.72rem;font-family:monospace;border-radius:3px;outline:none;}
-.api-input-row input:focus{border-color:#b8a87a;}
-.api-save-btn{padding:0.52rem 0.85rem;background:#b8a87a;color:#0a0a0f;border:none;border-radius:3px;font-size:0.68rem;font-weight:bold;cursor:pointer;font-family:monospace;white-space:nowrap;}
-.api-del-btn{padding:0.52rem 0.68rem;background:transparent;border:1px solid #7f1d1d;color:#ef4444;border-radius:3px;font-size:0.68rem;cursor:pointer;font-family:monospace;}
-.proj-label{font-size:0.62rem;color:#b8a87a;font-family:monospace;margin-bottom:0.35rem;margin-top:0.6rem;}
-.proj-label:first-child{margin-top:0;}
-.proj-input{width:100%;padding:0.52rem 0.75rem;background:#0a0a0f;border:1px solid #2a2a3a;color:#e8e4d8;font-size:0.72rem;font-family:inherit;border-radius:3px;outline:none;box-sizing:border-box;}
-.proj-input:focus{border-color:#b8a87a;}
-.proj-textarea{width:100%;padding:0.52rem 0.75rem;background:#0a0a0f;border:1px solid #2a2a3a;color:#e8e4d8;font-size:0.72rem;font-family:inherit;border-radius:3px;outline:none;resize:none;min-height:80px;line-height:1.6;box-sizing:border-box;}
-.proj-textarea:focus{border-color:#b8a87a;}
-.proj-note{font-size:0.62rem;color:#555;margin-top:0.3rem;line-height:1.5;}
-.deploy-content{flex:1;padding:1.1rem;display:flex;flex-direction:column;gap:0.75rem;overflow-y:auto;}
-.deploy-status{background:#0f0f18;border:1px solid #2a2a3a;padding:0.9rem;border-radius:4px;font-size:0.75rem;color:#d8d4c4;line-height:1.8;white-space:pre-wrap;}
-.deploy-progress{height:3px;background:#1a1a2a;border-radius:2px;overflow:hidden;}
-.deploy-progress-bar{height:100%;background:#4ade80;border-radius:2px;transition:width 0.3s;width:0%;}
-.deployed-app-item{background:#0f0f18;border:1px solid #2a2a3a;padding:0.68rem;border-radius:3px;margin-bottom:0.38rem;}
-.deployed-app-item .app-name{font-size:0.75rem;color:#e8e4d8;margin-bottom:0.28rem;}
-.deployed-app-item a{font-size:0.62rem;color:#4ade80;font-family:monospace;word-break:break-all;}
-.deployed-app-item .app-date{font-size:0.55rem;color:#444;margin-top:0.18rem;}
-#overlay{display:none;position:fixed;inset:0;z-index:50;background:rgba(0,0,0,0.5);}
-#overlay.show{display:block;}
-@media(max-width:640px){
-  #sidebar{position:fixed;top:0;left:0;bottom:0;z-index:100;transform:translateX(-100%);}
-  #sidebar.open{transform:translateX(0);}
+:root {
+  --bg: #0a0804;
+  --bg2: #110e08;
+  --bg3: #1a1510;
+  --border: #3a2e1e;
+  --gold: #c8983a;
+  --gold2: #f0c060;
+  --amber: #e8a020;
+  --text: #e8d8b0;
+  --text2: #a89060;
+  --text3: #6a5030;
+  --red: #cc3322;
+  --blue: #3a6090;
+  --green: #3a7050;
+  --radius: 4px;
+  --panel-w: 280px;
+}
+* { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Crimson Text', serif; font-size: 16px; }
+
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--border); border-radius: 3px; }
+
+/* ─── START SCREEN ─── */
+#startScreen {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  min-height: 100vh; padding: 2rem 1rem;
+  background: radial-gradient(ellipse at 50% 0%, #2a1a05 0%, var(--bg) 70%);
+}
+.logo {
+  font-family: 'Cinzel', serif; font-size: clamp(2.4rem, 8vw, 4rem); font-weight: 900;
+  color: var(--gold2); letter-spacing: 0.25em; text-transform: uppercase;
+  text-shadow: 0 0 40px rgba(200,152,58,0.5), 0 0 80px rgba(200,152,58,0.2);
+  margin-bottom: 0.25rem;
+}
+.tagline { font-family: 'IM Fell English', serif; font-style: italic; color: var(--text2); font-size: 1rem; letter-spacing: 0.1em; margin-bottom: 2.5rem; }
+.start-form { width: 100%; max-width: 540px; display: flex; flex-direction: column; gap: 1rem; }
+.field-label { font-family: 'Cinzel', serif; font-size: 0.7rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); margin-bottom: 0.35rem; }
+.field-label span { color: var(--text3); font-family: 'Crimson Text', serif; font-size: 0.85rem; text-transform: none; letter-spacing: 0; font-style: italic; }
+textarea, input[type=text], input[type=password] {
+  width: 100%; background: var(--bg2); border: 1px solid var(--border);
+  color: var(--text); padding: 0.75rem; font-family: 'Crimson Text', serif; font-size: 0.95rem;
+  border-radius: var(--radius); resize: vertical; outline: none; transition: border-color 0.2s;
+}
+textarea:focus, input:focus { border-color: var(--gold); }
+.api-row { position: relative; }
+.api-row input { padding-right: 2.5rem; }
+.eye-btn { position: absolute; right: 0.6rem; top: 50%; transform: translateY(-50%); background: none; border: none; color: var(--text3); cursor: pointer; font-size: 1.1rem; padding: 0.2rem; }
+.eye-btn:hover { color: var(--gold); }
+.api-note { font-size: 0.78rem; color: var(--text3); font-style: italic; margin-top: 0.25rem; }
+.api-note a { color: var(--text2); }
+.enter-btn {
+  font-family: 'Cinzel', serif; font-size: 0.9rem; letter-spacing: 0.2em; text-transform: uppercase;
+  background: linear-gradient(135deg, #2a1e08 0%, #3a2a10 100%);
+  border: 1px solid var(--gold); color: var(--gold2); padding: 0.9rem 2rem;
+  cursor: pointer; border-radius: var(--radius); transition: all 0.2s; margin-top: 0.5rem;
+}
+.enter-btn:hover { background: linear-gradient(135deg, #3a2e12 0%, #4a3a18 100%); box-shadow: 0 0 20px rgba(200,152,58,0.3); }
+.enter-btn:disabled { opacity: 0.4; cursor: not-allowed; box-shadow: none; }
+
+/* ─── GAME SCREEN ─── */
+#gameScreen { display: none; height: 100vh; flex-direction: column; overflow: hidden; position: relative; }
+
+/* TOP BAR */
+.topbar {
+  display: flex; align-items: center; gap: 0.5rem; padding: 0.5rem 0.75rem;
+  background: var(--bg2); border-bottom: 1px solid var(--border); flex-shrink: 0;
+  flex-wrap: wrap;
+}
+.stat { display: flex; align-items: center; gap: 0.3rem; font-size: 0.8rem; }
+.stat-icon { font-size: 0.9rem; }
+.stat-val { font-family: 'Cinzel', serif; font-weight: 600; color: var(--gold); font-size: 0.78rem; }
+.stat-bar { width: 50px; height: 5px; background: var(--bg3); border-radius: 3px; overflow: hidden; }
+.stat-fill { height: 100%; border-radius: 3px; transition: width 0.4s; }
+.hp-fill { background: linear-gradient(90deg, var(--red), #ee5544); }
+.mp-fill { background: linear-gradient(90deg, var(--blue), #6090c0); }
+.xp-fill { background: linear-gradient(90deg, var(--green), #60b080); }
+.spacer { flex: 1; }
+.icon-btn { background: none; border: none; color: var(--text2); cursor: pointer; font-size: 1.2rem; padding: 0.25rem 0.4rem; border-radius: var(--radius); transition: color 0.15s; }
+.icon-btn:hover { color: var(--gold); }
+
+/* MAIN LAYOUT */
+.game-layout { display: flex; flex: 1; overflow: hidden; }
+
+/* STORY */
+.story-area {
+  flex: 1; overflow-y: auto; padding: 1.25rem 1rem;
+  display: flex; flex-direction: column; gap: 0;
+}
+.msg { padding: 0.6rem 0; animation: fadeIn 0.3s ease; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: translateY(0); } }
+.msg-narr { font-family: 'IM Fell English', serif; font-size: 1.05rem; line-height: 1.75; color: var(--text); }
+.msg-narr[contenteditable=true] { outline: 1px dashed var(--border); padding: 2px 4px; border-radius: 2px; }
+.msg-narr[contenteditable=true]:focus { outline-color: var(--gold); background: rgba(200,152,58,0.05); }
+.msg-player { font-family: 'Crimson Text', serif; font-size: 0.9rem; color: var(--text2); font-style: italic; padding: 0.25rem 0; }
+.msg-player::before { content: '▶ '; color: var(--text3); font-style: normal; }
+.msg-badge { font-size: 0.75rem; color: var(--text3); font-family: 'Cinzel', serif; letter-spacing: 0.1em; margin-right: 0.4rem; }
+.msg-thinking { color: var(--text3); font-style: italic; font-size: 0.9rem; animation: pulse 1.2s ease-in-out infinite; }
+@keyframes pulse { 0%,100% { opacity: 0.4; } 50% { opacity: 1; } }
+.divider { border: none; border-top: 1px solid var(--border); opacity: 0.4; margin: 0.5rem 0; }
+
+/* SIDE PANELS */
+.side-panel {
+  width: var(--panel-w); background: var(--bg2); border-left: 1px solid var(--border);
+  overflow-y: auto; padding: 1rem; display: none; flex-direction: column; gap: 0.75rem;
+  flex-shrink: 0;
+}
+.side-panel.open { display: flex; }
+.panel-title { font-family: 'Cinzel', serif; font-size: 0.75rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); border-bottom: 1px solid var(--border); padding-bottom: 0.5rem; }
+.panel-section { font-size: 0.85rem; }
+.panel-section h4 { font-family: 'Cinzel', serif; font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text3); margin-bottom: 0.35rem; }
+.tag { display: inline-block; background: var(--bg3); border: 1px solid var(--border); color: var(--text2); font-size: 0.75rem; padding: 0.15rem 0.5rem; border-radius: 2px; margin: 0.1rem; }
+.empty-note { color: var(--text3); font-style: italic; font-size: 0.82rem; }
+.npc-item { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.5rem; margin-bottom: 0.4rem; }
+.npc-name { font-family: 'Cinzel', serif; font-size: 0.78rem; color: var(--gold); }
+.npc-role { font-size: 0.78rem; color: var(--text3); font-style: italic; }
+.npc-desc { font-size: 0.82rem; color: var(--text2); margin-top: 0.25rem; }
+
+/* SETTINGS PANEL */
+#settingsPanel {
+  position: fixed; top: 0; right: 0; height: 100%; width: min(340px, 90vw);
+  background: var(--bg2); border-left: 1px solid var(--border); z-index: 100;
+  overflow-y: auto; padding: 1.25rem; display: none; flex-direction: column; gap: 1rem;
+  transform: translateX(100%); transition: transform 0.2s ease;
+}
+#settingsPanel.open { display: flex; transform: translateX(0); }
+.settings-header { display: flex; justify-content: space-between; align-items: center; }
+.settings-title { font-family: 'Cinzel', serif; font-size: 0.9rem; letter-spacing: 0.2em; text-transform: uppercase; color: var(--gold); }
+.close-btn { background: none; border: none; color: var(--text2); cursor: pointer; font-size: 1.4rem; line-height: 1; }
+.close-btn:hover { color: var(--gold); }
+.settings-section { border-top: 1px solid var(--border); padding-top: 0.75rem; }
+.settings-section h4 { font-family: 'Cinzel', serif; font-size: 0.7rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--text3); margin-bottom: 0.6rem; }
+.slot-card { background: var(--bg3); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.6rem; display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.4rem; cursor: pointer; transition: border-color 0.15s; }
+.slot-card:hover { border-color: var(--gold); }
+.slot-avatar { font-size: 1.6rem; line-height: 1; }
+.slot-info { flex: 1; min-width: 0; }
+.slot-name { font-family: 'Cinzel', serif; font-size: 0.8rem; color: var(--gold); }
+.slot-role { font-size: 0.78rem; color: var(--text3); font-style: italic; }
+.slot-del { background: none; border: none; color: var(--text3); cursor: pointer; font-size: 1rem; padding: 0.2rem; }
+.slot-del:hover { color: var(--red); }
+.add-slot-btn { width: 100%; background: var(--bg); border: 1px dashed var(--border); color: var(--text3); padding: 0.5rem; cursor: pointer; border-radius: var(--radius); font-family: 'Crimson Text', serif; font-size: 0.9rem; transition: all 0.15s; }
+.add-slot-btn:hover { border-color: var(--gold); color: var(--gold); }
+.char-edit { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 0.75rem; margin-top: 0.5rem; display: none; flex-direction: column; gap: 0.5rem; }
+.char-edit.open { display: flex; }
+.char-edit input, .char-edit textarea { font-size: 0.85rem; padding: 0.4rem 0.6rem; }
+.char-edit .avatar-row { display: flex; gap: 0.3rem; flex-wrap: wrap; }
+.char-edit .avatar-opt { font-size: 1.4rem; cursor: pointer; padding: 0.2rem; border: 1px solid transparent; border-radius: 3px; transition: border-color 0.1s; }
+.char-edit .avatar-opt:hover, .char-edit .avatar-opt.sel { border-color: var(--gold); }
+.btn-row { display: flex; gap: 0.5rem; }
+.mini-btn { flex: 1; background: var(--bg3); border: 1px solid var(--border); color: var(--text2); padding: 0.4rem; cursor: pointer; border-radius: var(--radius); font-family: 'Crimson Text', serif; font-size: 0.85rem; transition: all 0.15s; }
+.mini-btn:hover { border-color: var(--gold); color: var(--gold); }
+.mini-btn.primary { background: rgba(200,152,58,0.15); border-color: var(--gold); color: var(--gold); }
+.provider-row { display: flex; gap: 0.4rem; margin-bottom: 0.5rem; }
+.provider-btn { flex: 1; padding: 0.45rem; background: var(--bg); border: 1px solid var(--border); color: var(--text2); font-family: 'Cinzel', serif; font-size: 0.7rem; letter-spacing: 0.1em; cursor: pointer; border-radius: var(--radius); transition: all 0.15s; }
+.provider-btn.active { border-color: var(--gold); color: var(--gold2); background: rgba(200,152,58,0.1); }
+.save-btn { width: 100%; background: rgba(200,152,58,0.1); border: 1px solid var(--gold); color: var(--gold); padding: 0.5rem; cursor: pointer; border-radius: var(--radius); font-family: 'Cinzel', serif; font-size: 0.75rem; letter-spacing: 0.15em; transition: all 0.15s; }
+.save-btn:hover { background: rgba(200,152,58,0.2); }
+
+/* INPUT AREA */
+.input-area { border-top: 1px solid var(--border); background: var(--bg2); flex-shrink: 0; }
+.action-row { display: flex; gap: 0; border-bottom: 1px solid var(--border); }
+.action-btn {
+  flex: 1; padding: 0.65rem 0.4rem; background: var(--bg2); border: none; border-right: 1px solid var(--border);
+  color: var(--text2); font-family: 'Cinzel', serif; font-size: 0.65rem; letter-spacing: 0.12em;
+  text-transform: uppercase; cursor: pointer; transition: all 0.15s;
+}
+.action-btn:last-child { border-right: none; }
+.action-btn:hover { background: var(--bg3); color: var(--gold); }
+.action-btn.active { background: var(--bg3); color: var(--gold2); }
+.action-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.mode-bar {
+  display: none; border-bottom: 1px solid var(--border);
+  background: var(--bg);
+}
+.mode-bar.open { display: flex; }
+.mode-row { display: flex; gap: 0; width: 100%; }
+.mode-btn { flex: 1; padding: 0.5rem 0.25rem; background: none; border: none; border-right: 1px solid var(--border); color: var(--text2); font-family: 'Cinzel', serif; font-size: 0.6rem; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; transition: all 0.15s; }
+.mode-btn:last-child { border-right: none; }
+.mode-btn:hover { color: var(--gold); background: var(--bg2); }
+.mode-btn.active { color: var(--gold2); background: rgba(200,152,58,0.08); }
+.back-btn { padding: 0.5rem 0.7rem; background: none; border: none; border-right: 1px solid var(--border); color: var(--text3); cursor: pointer; font-size: 0.9rem; }
+.back-btn:hover { color: var(--gold); }
+.text-row { display: none; padding: 0.5rem; gap: 0.5rem; align-items: flex-end; }
+.text-row.open { display: flex; }
+.mode-indicator { font-family: 'Cinzel', serif; font-size: 0.65rem; letter-spacing: 0.15em; color: var(--gold); text-transform: uppercase; padding: 0.25rem 0.4rem; border: 1px solid var(--border); border-radius: var(--radius); white-space: nowrap; align-self: flex-end; margin-bottom: 0.35rem; }
+.text-row textarea { flex: 1; min-height: 52px; max-height: 160px; resize: none; font-size: 0.95rem; padding: 0.5rem 0.65rem; }
+.send-btn { background: rgba(200,152,58,0.15); border: 1px solid var(--gold); color: var(--gold); padding: 0.5rem 0.9rem; cursor: pointer; border-radius: var(--radius); font-family: 'Cinzel', serif; font-size: 0.7rem; letter-spacing: 0.1em; text-transform: uppercase; transition: all 0.15s; white-space: nowrap; align-self: flex-end; margin-bottom: 0.35rem; }
+.send-btn:hover { background: rgba(200,152,58,0.25); }
+.send-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+.sugg-row { display: flex; gap: 0.4rem; padding: 0.4rem 0.5rem; overflow-x: auto; }
+.sugg-btn { background: var(--bg3); border: 1px solid var(--border); color: var(--text2); padding: 0.3rem 0.7rem; font-family: 'Crimson Text', serif; font-size: 0.82rem; font-style: italic; cursor: pointer; border-radius: 20px; white-space: nowrap; transition: all 0.15s; }
+.sugg-btn:hover { border-color: var(--gold); color: var(--gold); background: rgba(200,152,58,0.08); }
+
+/* overlay */
+.overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; }
+.overlay.open { display: block; }
+
+@media (max-width: 600px) {
+  :root { --panel-w: 100vw; }
+  .side-panel { position: absolute; top: 0; left: 0; right: 0; bottom: 0; z-index: 50; }
+  .stat-bar { width: 36px; }
 }
 </style>
 </head>
 <body>
-<div id="setup">
-  <div class="setup-box">
-    <div class="setup-title">
-      <div class="label">PERSONAL AI ASSISTANT</div>
-      <h1>Genie</h1>
-      <div class="sub">おしん様 専属AI</div>
+
+<!-- START -->
+<div id="startScreen">
+  <div class="logo">Chronicle</div>
+  <div class="tagline">Your World · Your Rules · AI Narrated</div>
+  <div class="start-form">
+    <div>
+      <div class="field-label">▸ 主人公を語れ <span>— 外見・性格・過去・得意なこと、なんでも</span></div>
+      <textarea id="heroInput" rows="4" placeholder="例：銀髪のエルフ魔法使い、師匠を殺された復讐者。炎魔法が得意で、口数は少ない。左目に傷がある。"></textarea>
     </div>
-    <div class="setup-card">
-      <div class="card-label">— ANTHROPIC API KEY（Claude）必須 —</div>
-      <input type="password" id="ck" placeholder="sk-ant-api03-...">
+    <div>
+      <div class="field-label">▸ 世界・舞台を語れ <span>— 空白でもAIが世界を作る</span></div>
+      <textarea id="worldInput" rows="3" placeholder="例：近未来の廃墟都市。魔法と機械が混在する世界。腐敗した帝国が支配している。"></textarea>
     </div>
-    <div class="setup-card">
-      <div class="card-label">— OPENAI API KEY（ChatGPT）任意 —</div>
-      <input type="password" id="ok" placeholder="sk-proj-...">
-      <div class="note">※ 入力しなくてもClaudeのみで使用できます</div>
-    </div>
-    <div class="setup-card">
-      <div class="card-label">— GITHUB TOKEN（自動デプロイ）任意 —</div>
-      <input type="password" id="gk" placeholder="ghp_...">
-    </div>
-    <div class="setup-card">
-      <div class="card-label">— TAVILY API KEY（Web検索・URL読込）任意 —</div>
-      <input type="password" id="tk" placeholder="tvly-...">
-      <div class="note">※「〇〇を調べて」「このURL読んで：https://...」で使用</div>
-    </div>
-    <div class="setup-card">
-      <button class="setup-btn" onclick="saveKeys()">ジーニーを召喚する</button>
-    </div>
-    <div class="setup-footnote">キーはこの端末のみに保存されます。外部送信はありません。</div>
-  </div>
-</div>
-<div id="overlay" onclick="closeSidebar()"></div>
-<div id="main">
-  <div id="sidebar">
-    <div class="sidebar-header"><div class="logo">Genie <span>AI</span></div></div>
-    <div style="padding:0.4rem 0.7rem 0;">
-      <div class="sidebar-section">PROJECTS</div>
-      <button class="new-btn" onclick="openProjectModal('new')">＋ 新しいプロジェクト</button>
-      <div id="projectsList"></div>
-      <div class="sidebar-section" style="margin-top:0.5rem;">CHATS</div>
-      <button class="new-btn" onclick="newChat()">＋ 新しい会話</button>
-    </div>
-    <div class="sessions-list" id="sessionsList"></div>
-    <div class="sidebar-footer">
-      <button class="side-btn gold" onclick="openMem()">記憶 (<span id="mc">0</span>)</button>
-      <button class="side-btn" onclick="openAPI()">🔑 APIキー管理</button>
-      <button class="side-btn" onclick="openDeploy()">🚀 デプロイ済みアプリ</button>
-    </div>
-  </div>
-  <div id="content">
-    <header>
-      <button class="menu-btn" onclick="toggleSidebar()">☰</button>
-      <div class="title-area">
-        <div class="lbl">PERSONAL AI ASSISTANT</div>
-        <h2>Genie <span>— おしん様 専属</span></h2>
+    <div>
+      <div class="field-label">▸ NovelAI APIキー</div>
+      <div class="api-row">
+        <input type="password" id="apiKeyInput" placeholder="pst-..." autocomplete="off">
+        <button class="eye-btn" onclick="toggleApiVis()" id="eyeBtn">👁</button>
       </div>
-      <div class="hdr-right">
-        <span class="proj-badge" id="activeProjBadge" style="display:none"></span>
-        <div class="status-dot"></div>
-        <button class="hdr-btn" onclick="openAPI()">🔑</button>
-      </div>
-    </header>
-    <div class="ai-bar">
-      <button class="ai-tab active" id="tab-auto" onclick="setAI('auto')">🤖 自動</button>
-      <button class="ai-tab" id="tab-claude" onclick="setAI('claude')">⚡ Claude</button>
-      <button class="ai-tab" id="tab-openai" onclick="setAI('openai')">🧠 ChatGPT</button>
+      <div class="api-note">キーはブラウザ内にのみ保存されます。<a href="https://novelai.net/account" target="_blank">novelai.net</a> → アカウント設定 → 永続的APIトークン</div>
     </div>
-    <div id="proj-indicator"></div>
-    <div id="messages">
-      <div class="mwrap assistant">
-        <div class="mname">GENIE</div>
-        <div class="mbubble">お待ちしておりました、おしん様。ご用件をお申し付けください。</div>
-      </div>
-      <div id="typing">
-        <div class="tlabel" id="tlabel">GENIE</div>
-        <div class="tdots"><span></span><span></span><span></span></div>
-      </div>
-    </div>
-    <div class="quickbtns" id="quickbtns">
-      <button onclick="qs('最新のAIニュースを調べて')">🔍 AIニュース</button>
-      <button onclick="qs('ToDoアプリを作って')">ToDoアプリ</button>
-      <button onclick="qs('私のことを分析して')">私を分析</button>
-      <button onclick="qs('今日の提案をして')">今日の提案</button>
-    </div>
-    <div class="file-bar" id="filebar"></div>
-    <div class="imgprev-bar" id="imgbar"></div>
-    <footer>
-      <div class="frow">
-        <button class="file-btn" onclick="document.getElementById('fileInput').click()">📎</button>
-        <input type="file" id="fileInput" accept=".pdf,.txt,.md,.csv,image/*" style="display:none" onchange="onFile(event)">
-        <button class="img-btn" onclick="document.getElementById('fi').click()">🖼️</button>
-        <input type="file" id="fi" accept="image/*" style="display:none" onchange="onImg(event)">
-        <textarea id="ui" placeholder="ご用件をお申し付けください..." rows="1" oninput="autoResize(this)" onkeydown="onKey(event)"></textarea>
-        <button id="sendBtn" onclick="send()">送信</button>
-      </div>
-    </footer>
+    <button class="enter-btn" id="enterBtn" onclick="startGame()" disabled>ENTER THE CHRONICLE</button>
   </div>
 </div>
 
-<div id="projectModal">
-  <div class="mhdr">
-    <span id="projModalTitle">— 新しいプロジェクト —</span>
-    <button class="btn-cl" onclick="closeProjectModal()" style="padding:0.16rem 0.52rem;border:1px solid #555;background:transparent;color:#555;font-size:0.58rem;cursor:pointer;border-radius:2px;font-family:monospace;">閉じる</button>
+<!-- GAME -->
+<div id="gameScreen">
+  <div class="topbar">
+    <div class="stat">
+      <span class="stat-icon">❤</span>
+      <div class="stat-bar"><div class="stat-fill hp-fill" id="hpBar" style="width:100%"></div></div>
+      <span class="stat-val" id="hpVal">100/100</span>
+    </div>
+    <div class="stat">
+      <span class="stat-icon">✦</span>
+      <div class="stat-bar"><div class="stat-fill mp-fill" id="mpBar" style="width:100%"></div></div>
+      <span class="stat-val" id="mpVal">50/50</span>
+    </div>
+    <div class="stat">
+      <span class="stat-icon" style="font-family:'Cinzel',serif;font-size:0.72rem;color:var(--gold)">Lv.</span>
+      <span class="stat-val" id="lvVal">1</span>
+    </div>
+    <div class="stat">
+      <span class="stat-icon" style="font-size:0.8rem;color:var(--text3)">XP</span>
+      <div class="stat-bar"><div class="stat-fill xp-fill" id="xpBar" style="width:0%"></div></div>
+    </div>
+    <div class="stat">🪙 <span class="stat-val" id="goldVal">0</span></div>
+    <div class="spacer"></div>
+    <button class="icon-btn" onclick="togglePanel('charPanel')" title="キャラ">📜</button>
+    <button class="icon-btn" onclick="togglePanel('memPanel')" title="記憶">🧠</button>
+    <button class="icon-btn" onclick="toggleSettings()" title="設定">⚙️</button>
   </div>
-  <div class="proj-content">
-    <div class="proj-form">
-      <input type="hidden" id="editProjId">
-      <div class="proj-label">プロジェクト名 *</div>
-      <input class="proj-input" id="projName" placeholder="例：warframe攻略、ビジネスLINE">
-      <div class="proj-label">アイコン（絵文字）</div>
-      <input class="proj-input" id="projIcon" placeholder="🎮" style="max-width:100px;">
-      <div class="proj-label">指示文（ジーニーへの役割設定）</div>
-      <textarea class="proj-textarea" id="projPrompt" placeholder="例：warframeの専門家として答えてください。おしん様はUrielを使用中です。"></textarea>
-      <div class="proj-label">メモ・参考情報</div>
-      <textarea class="proj-textarea" id="projMemo" placeholder="自由にメモを入力..."></textarea>
-      <div class="proj-note">※ PDF・画像は会話中に📎ボタンから添付してください</div>
-      <div class="proj-label">クイックボタン（カンマ区切り）</div>
-      <input class="proj-input" id="projQuicks" placeholder="例：おすすめmod,ビルド相談,最新情報を調べて">
-      <div style="margin-top:1rem;display:flex;gap:0.5rem;">
-        <button style="flex:1;padding:0.52rem;background:#b8a87a;color:#0a0a0f;border:none;border-radius:3px;font-size:0.68rem;font-weight:bold;cursor:pointer;font-family:monospace;" onclick="saveProject()">保存</button>
-        <button id="deleteProjBtn" style="padding:0.52rem 0.85rem;background:transparent;border:1px solid #7f1d1d;color:#ef4444;border-radius:3px;font-size:0.68rem;cursor:pointer;font-family:monospace;display:none;" onclick="deleteCurrentProject()">削除</button>
+
+  <div class="game-layout">
+    <div class="story-area" id="storyArea"></div>
+
+    <!-- CHAR PANEL -->
+    <div class="side-panel" id="charPanel">
+      <div class="panel-title">📜 キャラクターシート</div>
+      <div class="panel-section">
+        <h4>スキル・能力</h4>
+        <div id="skillsList"><span class="empty-note">まだ発見されていない</span></div>
+      </div>
+      <div class="panel-section">
+        <h4>特性</h4>
+        <div id="traitsList"><span class="empty-note">—</span></div>
+      </div>
+    </div>
+
+    <!-- MEM PANEL -->
+    <div class="side-panel" id="memPanel">
+      <div class="panel-title">🧠 記憶の書</div>
+      <div class="panel-section">
+        <h4>登場人物</h4>
+        <div id="npcList"><span class="empty-note">誰とも会っていない</span></div>
+      </div>
+      <div class="panel-section">
+        <h4>訪れた場所</h4>
+        <div id="placesList"><span class="empty-note">未探索</span></div>
+      </div>
+      <div class="panel-section">
+        <h4>所持アイテム</h4>
+        <div id="itemsList"><span class="empty-note">何も持っていない</span></div>
+      </div>
+      <div class="panel-section">
+        <h4>クエスト</h4>
+        <div id="questsList"><span class="empty-note">なし</span></div>
+      </div>
+      <div class="panel-section">
+        <h4>重要な出来事</h4>
+        <div id="eventsList"><span class="empty-note">何もない</span></div>
       </div>
     </div>
   </div>
+
+  <!-- INPUT -->
+  <div class="input-area">
+    <div class="action-row">
+      <button class="action-btn" id="takeTurnBtn" onclick="toggleModeBar()">TAKE A TURN</button>
+      <button class="action-btn" id="continueBtn" onclick="doContinue()" disabled>CONTINUE</button>
+      <button class="action-btn" id="retryBtn" onclick="doRetry()" disabled>RETRY</button>
+    </div>
+    <div class="mode-bar" id="modeBar">
+      <div class="mode-row">
+        <button class="back-btn" onclick="closeModeBar()">←</button>
+        <button class="mode-btn" id="modeDoBtn" onclick="pickMode('Do')">Do</button>
+        <button class="mode-btn" id="modeSayBtn" onclick="pickMode('Say')">Say</button>
+        <button class="mode-btn" id="modeStoryBtn" onclick="pickMode('Story')">Story</button>
+        <button class="mode-btn" id="modeSeeBtn" onclick="pickMode('See')">See</button>
+      </div>
+    </div>
+    <div class="text-row" id="textRow">
+      <span class="mode-indicator" id="modeIndicator">DO</span>
+      <textarea id="actionInput" placeholder="行動を入力..." onkeydown="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();send();}"></textarea>
+      <button class="send-btn" id="sendBtn" onclick="send()">送る</button>
+    </div>
+    <div class="sugg-row" id="suggRow"></div>
+  </div>
 </div>
 
-<div id="apiModal">
-  <div class="mhdr">
-    <span>— APIキー管理 —</span>
-    <button class="btn-cl" onclick="closeAPI()" style="padding:0.16rem 0.52rem;border:1px solid #555;background:transparent;color:#555;font-size:0.58rem;cursor:pointer;border-radius:2px;font-family:monospace;">閉じる</button>
+<!-- SETTINGS -->
+<div class="overlay" id="overlay" onclick="toggleSettings()"></div>
+<div id="settingsPanel">
+  <div class="settings-header">
+    <span class="settings-title">⚙ 設定</span>
+    <button class="close-btn" onclick="toggleSettings()">✕</button>
   </div>
-  <div class="api-content">
+
+  <div class="settings-section">
+    <h4>▸ キャラクタースロット</h4>
+    <div id="slotList"></div>
+    <button class="add-slot-btn" onclick="addSlot()">＋ キャラクターを追加</button>
+    <div class="char-edit" id="charEditForm">
+      <div class="field-label" style="font-size:0.65rem">アバター</div>
+      <div class="avatar-row" id="avatarRow"></div>
+      <div class="field-label" style="font-size:0.65rem;margin-top:0.3rem">名前</div>
+      <input type="text" id="editName" placeholder="キャラクター名">
+      <div class="field-label" style="font-size:0.65rem">役割</div>
+      <input type="text" id="editRole" placeholder="仲間・敵・NPC など">
+      <div class="field-label" style="font-size:0.65rem">説明</div>
+      <textarea id="editDesc" rows="3" placeholder="外見・性格・関係性など"></textarea>
+      <div class="btn-row">
+        <button class="mini-btn primary" onclick="saveSlot()">保存</button>
+        <button class="mini-btn" onclick="cancelEdit()">キャンセル</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="settings-section">
+    <h4>▸ APIキー設定</h4>
     <div class="api-row">
-      <div class="api-label">ANTHROPIC（Claude）必須 <span class="api-status" id="ck-status">未設定</span></div>
-      <div class="api-input-row"><input type="password" id="ck-edit" placeholder="sk-ant-api03-..."><button class="api-save-btn" onclick="saveOneKey('ck','ogck','sk-ant-','ck-status')">保存</button><button class="api-del-btn" onclick="delOneKey('ck','ogck')">削除</button></div>
+      <input type="password" id="settingsApiKey" placeholder="pst-...">
+      <button class="eye-btn" onclick="toggleSettingsApiVis()" id="settingsEye">👁</button>
     </div>
-    <div class="api-row">
-      <div class="api-label">OPENAI（ChatGPT）任意 <span class="api-status" id="ok-status">未設定</span></div>
-      <div class="api-input-row"><input type="password" id="ok-edit" placeholder="sk-proj-..."><button class="api-save-btn" onclick="saveOneKey('ok','ogok','sk-','ok-status')">保存</button><button class="api-del-btn" onclick="delOneKey('ok','ogok')">削除</button></div>
-    </div>
-    <div class="api-row">
-      <div class="api-label">GITHUB TOKEN（デプロイ）任意 <span class="api-status" id="gk-status">未設定</span></div>
-      <div class="api-input-row"><input type="password" id="gk-edit" placeholder="ghp_..."><button class="api-save-btn" onclick="saveOneKey('gk','oggk','ghp_','gk-status')">保存</button><button class="api-del-btn" onclick="delOneKey('gk','oggk')">削除</button></div>
-    </div>
-    <div class="api-row">
-      <div class="api-label">TAVILY（Web検索）任意 <span class="api-status" id="tk-status">未設定</span></div>
-      <div class="api-input-row"><input type="password" id="tk-edit" placeholder="tvly-..."><button class="api-save-btn" onclick="saveOneKey('tk','ogtk','tvly-','tk-status')">保存</button><button class="api-del-btn" onclick="delOneKey('tk','ogtk')">削除</button></div>
-    </div>
+    <button class="save-btn" onclick="saveApiKey()" style="margin-top:0.5rem">保存</button>
   </div>
-</div>
 
-<div id="previewModal">
-  <div class="mhdr">
-    <span>— 完成品プレビュー —</span>
-    <div><button class="btn-dep" onclick="deployCurrentCode()">🚀 デプロイ</button><button class="btn-dl" onclick="dlPreview()">HTMLで保存</button><button class="btn-cl" onclick="closePrev()">閉じる</button></div>
-  </div>
-  <iframe id="pf"></iframe>
-</div>
-
-<div id="memoryModal">
-  <div class="mhdr">
-    <span>— ジーニーの記憶 —</span>
-    <button class="btn-cl" onclick="closeMem()" style="padding:0.16rem 0.52rem;border:1px solid #555;background:transparent;color:#555;font-size:0.58rem;cursor:pointer;border-radius:2px;font-family:monospace;">閉じる</button>
-  </div>
-  <div id="memList"></div>
-  <div class="memadd"><input type="text" id="mi" placeholder="覚えさせたいことを入力..."><button onclick="addMemMan()">記憶させる</button></div>
-</div>
-
-<div id="deployModal">
-  <div class="mhdr">
-    <span>— デプロイ —</span>
-    <button class="btn-cl" onclick="closeDeployModal()" style="padding:0.16rem 0.52rem;border:1px solid #555;background:transparent;color:#555;font-size:0.58rem;cursor:pointer;border-radius:2px;font-family:monospace;">閉じる</button>
-  </div>
-  <div class="deploy-content">
-    <div class="deploy-status" id="deployStatus">デプロイ履歴</div>
-    <div class="deploy-progress"><div class="deploy-progress-bar" id="deployBar"></div></div>
-    <div id="deployedApps"></div>
+  <div class="settings-section">
+    <h4>▸ 世界設定（更新）</h4>
+    <textarea id="settingsWorld" rows="3" placeholder="世界設定を変更..."></textarea>
+    <button class="save-btn" onclick="saveWorld()" style="margin-top:0.5rem">更新</button>
   </div>
 </div>
 
 <script>
-let ck='',ok='',gk='',tk='',loading=false,prevCode='',ai='auto',imgs=[],attachedFiles=[];
-let sessions=[],currentSessionId=null,currentProjectId=null;
-const GH_USER='sansan2103-a11y',GH_REPO='genie-apps';
-const MODEL_CLAUDE='claude-haiku-4-5-20251001',MODEL_GPT='gpt-4o-mini';
+// ─── STATE ───────────────────────────────────────
+const PROXY = 'https://novel-proxy.sansan2103.workers.dev';
+const MODEL = 'kayra-v1';
+const AVATARS = ['🧙','⚔️','🏹','🗡️','🛡️','🔮','💀','👁️','🐉','🧝','👸','🤺','🦊','🐺','👤','🌑'];
 
-const getSessions=()=>{try{return JSON.parse(localStorage.getItem('gs')||'[]');}catch{return[];}};
-const saveSessions=s=>localStorage.setItem('gs',JSON.stringify(s));
-const getProjects=()=>{try{return JSON.parse(localStorage.getItem('gp2')||'[]');}catch{return[];}};
-const saveProjects=p=>{try{localStorage.setItem('gp2',JSON.stringify(p));}catch{alert('保存失敗。容量不足の可能性があります。');}};
-const getDeployedApps=()=>{try{return JSON.parse(localStorage.getItem('gda')||'[]');}catch{return[];}};
-const saveDeployedApps=a=>localStorage.setItem('gda',JSON.stringify(a));
-
-const MEM_KEYS={profile:'gm_profile',game:'gm_game',work:'gm_work',misc:'gm_misc'};
-function getAllMems(){const all=[];Object.entries(MEM_KEYS).forEach(([cat,key])=>{try{const m=JSON.parse(localStorage.getItem(key)||'[]');m.forEach(x=>all.push({...x,cat}));}catch{}});return all;}
-function getMemsByCategory(cat){try{return JSON.parse(localStorage.getItem(MEM_KEYS[cat])||'[]');}catch{return[];}}
-function saveMemsByCategory(cat,mems){localStorage.setItem(MEM_KEYS[cat],JSON.stringify(mems));updateMemCount();}
-function updateMemCount(){document.getElementById('mc').textContent=getAllMems().length;}
-function addMemWithCategory(text,cat='misc'){const mems=getMemsByCategory(cat);if(mems.some(m=>m.t===text))return;mems.push({t:text,d:new Date().toLocaleDateString('ja-JP')});saveMemsByCategory(cat,mems);}
-function buildMemoryContext(){
-  const p=getMemsByCategory('profile'),g=getMemsByCategory('game'),w=getMemsByCategory('work'),m=getMemsByCategory('misc');
-  let ctx='';
-  if(p.length)ctx+='\n【おしん様のプロフィール】\n'+p.map(x=>'・'+x.t).join('\n');
-  if(g.length)ctx+='\n【ゲーム情報】\n'+g.map(x=>'・'+x.t).join('\n');
-  if(w.length)ctx+='\n【仕事・プロジェクト】\n'+w.map(x=>'・'+x.t).join('\n');
-  if(m.length)ctx+='\n【その他の記憶】\n'+m.map(x=>'・'+x.t).join('\n');
-  return ctx?'\n\n【おしん様の記憶】'+ctx:'';
-}
-
-function readFileAsText(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=rej;r.readAsText(file);});}
-function readFileAsBase64(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result.split(',')[1]);r.onerror=rej;r.readAsDataURL(file);});}
-function readFileAsDataURL(file){return new Promise((res,rej)=>{const r=new FileReader();r.onload=e=>res(e.target.result);r.onerror=rej;r.readAsDataURL(file);});}
-
-async function onFile(e){
-  const files=Array.from(e.target.files);
-  for(const file of files){
-    const ext=file.name.split('.').pop().toLowerCase();
-    if(['jpg','jpeg','png','gif','webp'].includes(ext)){const dataURL=await readFileAsDataURL(file);imgs.push(dataURL);renderImgBar();}
-    else if(ext==='pdf'){const base64=await readFileAsBase64(file);attachedFiles.push({type:'pdf',name:file.name,base64});renderFileBar();}
-    else{const text=await readFileAsText(file);attachedFiles.push({type:'text',name:file.name,content:text.substring(0,8000)});renderFileBar();}
-  }
-  e.target.value='';
-}
-function renderFileBar(){const bar=document.getElementById('filebar');if(!attachedFiles.length){bar.classList.remove('show');bar.innerHTML='';return;}bar.classList.add('show');bar.innerHTML=attachedFiles.map((f,i)=>`<div class="file-chip">${f.type==='pdf'?'📄':'📝'} ${f.name}<button onclick="removeFile(${i})">×</button></div>`).join('');}
-function removeFile(i){attachedFiles.splice(i,1);renderFileBar();}
-function renderImgBar(){const bar=document.getElementById('imgbar');if(!imgs.length){bar.classList.remove('show');bar.innerHTML='';return;}bar.classList.add('show');bar.innerHTML=imgs.map((img,i)=>`<div class="imgprev-item"><img src="${img}"><button onclick="removeImg(${i})">×</button></div>`).join('');}
-function removeImg(i){imgs.splice(i,1);renderImgBar();}
-function onImg(e){const f=e.target.files[0];if(!f)return;const r=new FileReader();r.onload=ev=>{imgs.push(ev.target.result);renderImgBar();};r.readAsDataURL(f);e.target.value='';}
-
-// PROJECT
-function getProj(id){return getProjects().find(p=>p.id===id);}
-
-function updateProjUI(){
-  const proj=currentProjectId?getProj(currentProjectId):null;
-  const badge=document.getElementById('activeProjBadge');
-  const indicator=document.getElementById('proj-indicator');
-  if(proj){
-    badge.textContent=`${proj.icon||'📁'} ${proj.name}`;
-    badge.style.display='inline';
-    indicator.textContent=`📁 プロジェクト「${proj.name}」の指示文が適用されています`;
-    indicator.style.display='block';
-  }else{
-    badge.style.display='none';
-    indicator.style.display='none';
-  }
-  // クイックボタン更新
-  if(proj&&proj.quicks){
-    const btns=proj.quicks.split(',').map(q=>q.trim()).filter(Boolean);
-    document.getElementById('quickbtns').innerHTML=btns.map(q=>`<button onclick="qs('${q.replace(/'/g,"\\'")}')">${q}</button>`).join('');
-  }else{
-    document.getElementById('quickbtns').innerHTML=`<button onclick="qs('最新のAIニュースを調べて')">🔍 AIニュース</button><button onclick="qs('ToDoアプリを作って')">ToDoアプリ</button><button onclick="qs('私のことを分析して')">私を分析</button><button onclick="qs('今日の提案をして')">今日の提案</button>`;
-  }
-}
-
-function renderProjects(){
-  const list=document.getElementById('projectsList'),projs=getProjects();
-  if(!projs.length){list.innerHTML='<div style="padding:0.5rem;font-size:0.65rem;color:#333;text-align:center;">プロジェクトなし</div>';return;}
-  list.innerHTML=projs.map(p=>`<div class="proj-item${p.id===currentProjectId?' active':''}" onclick="selectProject('${p.id}')"><span class="proj-icon">${p.icon||'📁'}</span><span class="proj-name">${p.name}</span><button class="proj-edit" onclick="event.stopPropagation();openProjectModal('edit','${p.id}')">✎</button></div>`).join('');
-}
-
-function selectProject(id){
-  if(currentProjectId===id){
-    currentProjectId=null;
-  }else{
-    currentProjectId=id;
-  }
-  renderProjects();
-  updateProjUI();
-  closeSidebar();
-}
-
-function openProjectModal(mode,id){
-  document.getElementById('editProjId').value=id||'';
-  document.getElementById('projModalTitle').textContent=mode==='new'?'— 新しいプロジェクト —':'— プロジェクト編集 —';
-  document.getElementById('deleteProjBtn').style.display=mode==='edit'?'block':'none';
-  if(mode==='edit'&&id){
-    const p=getProj(id);
-    if(p){
-      document.getElementById('projName').value=p.name||'';
-      document.getElementById('projIcon').value=p.icon||'';
-      document.getElementById('projPrompt').value=p.prompt||'';
-      document.getElementById('projMemo').value=p.memo||'';
-      document.getElementById('projQuicks').value=p.quicks||'';
-    }
-  }else{
-    ['projName','projIcon','projPrompt','projMemo','projQuicks'].forEach(i=>document.getElementById(i).value='');
-  }
-  document.getElementById('projectModal').classList.add('show');
-}
-function closeProjectModal(){document.getElementById('projectModal').classList.remove('show');}
-
-function saveProject(){
-  const name=document.getElementById('projName').value.trim();
-  if(!name){alert('プロジェクト名を入力してください');return;}
-  const projs=getProjects();
-  const editId=document.getElementById('editProjId').value;
-  const proj={
-    id:editId||'p'+Date.now(),
-    name,
-    icon:document.getElementById('projIcon').value.trim()||'📁',
-    prompt:document.getElementById('projPrompt').value.trim(),
-    memo:document.getElementById('projMemo').value.trim(),
-    quicks:document.getElementById('projQuicks').value.trim(),
-    created:Date.now()
-  };
-  if(editId){const idx=projs.findIndex(p=>p.id===editId);if(idx>=0)projs[idx]=proj;else projs.push(proj);}
-  else projs.push(proj);
-  saveProjects(projs);
-  renderProjects();
-  closeProjectModal();
-  // 新規の場合は自動選択
-  if(!editId){
-    currentProjectId=proj.id;
-    renderProjects();
-  }
-  updateProjUI();
-  alert('✅ 保存しました！');
-}
-
-function deleteCurrentProject(){
-  const id=document.getElementById('editProjId').value;
-  if(!id||!confirm('削除しますか？'))return;
-  saveProjects(getProjects().filter(p=>p.id!==id));
-  if(currentProjectId===id){currentProjectId=null;}
-  renderProjects();
-  updateProjUI();
-  closeProjectModal();
-}
-
-function buildSystemPrompt(){
-  let sys=`あなたは「おしん様」専属AIアシスタント、ジーニーです。クールで知的、かしこまった敬語。一人称「私」、呼称「おしん様」。絵文字不使用。HTMLアプリはhtmlコードブロックで囲みHTML+CSS+JS all-in-oneで完全動作。画像・ファイルが送られたら詳細に分析。Web検索結果やURL内容は必ず活用。記憶とプロジェクト情報を積極的に活用。おしん様の要望を即実行。`;
-  if(currentProjectId){
-    const p=getProj(currentProjectId);
-    if(p){
-      if(p.prompt){sys+=`\n\n=== 現在のプロジェクト: ${p.name} ===\n${p.prompt}\n===`;}
-      if(p.memo){sys+=`\n\n=== プロジェクトメモ ===\n${p.memo}\n===`;}
-    }
-  }
-  sys+=buildMemoryContext();
-  return sys;
-}
-
-// API
-function openAPI(){updateAPIStatus();document.getElementById('apiModal').classList.add('show');}
-function closeAPI(){document.getElementById('apiModal').classList.remove('show');}
-function updateAPIStatus(){[{v:'ck',k:'ogck',id:'ck-status'},{v:'ok',k:'ogok',id:'ok-status'},{v:'gk',k:'oggk',id:'gk-status'},{v:'tk',k:'ogtk',id:'tk-status'}].forEach(({k,id})=>{const val=localStorage.getItem(k),el=document.getElementById(id);if(val){el.textContent='設定済み';el.className='api-status set';}else{el.textContent='未設定';el.className='api-status unset';}});}
-function saveOneKey(varName,storeKey,prefix,statusId){const input=document.getElementById(varName+'-edit'),val=input.value.trim();if(!val){alert('キーを入力してください');return;}if(!val.startsWith(prefix)){alert(`キーは ${prefix} で始まる必要があります`);return;}localStorage.setItem(storeKey,val);if(varName==='ck')ck=val;else if(varName==='ok'){ok=val;document.getElementById('tab-openai').style.opacity=ok?'1':'0.4';}else if(varName==='gk')gk=val;else if(varName==='tk')tk=val;input.value='';updateAPIStatus();alert('✅ 保存しました！');}
-function delOneKey(varName,storeKey){if(!confirm('削除しますか？'))return;localStorage.removeItem(storeKey);if(varName==='ck')ck='';else if(varName==='ok'){ok='';document.getElementById('tab-openai').style.opacity='0.4';}else if(varName==='gk')gk='';else if(varName==='tk')tk='';updateAPIStatus();}
-
-async function webSearch(query){if(!tk)return null;try{const res=await fetch('https://api.tavily.com/search',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${tk}`},body:JSON.stringify({query,max_results:5,search_depth:'basic',include_answer:true})});if(!res.ok)return null;const data=await res.json();let r='';if(data.answer)r+=`【要約】${data.answer}\n\n`;if(data.results?.length)r+=data.results.map(x=>`【${x.title}】\n${x.content}\nURL: ${x.url}`).join('\n\n');return r||null;}catch{return null;}}
-async function fetchURL(url){if(!tk)return null;try{const res=await fetch('https://api.tavily.com/extract',{method:'POST',headers:{'Content-Type':'application/json','Authorization':`Bearer ${tk}`},body:JSON.stringify({urls:[url],include_images:false})});if(!res.ok)return null;const data=await res.json();return(data.results?.[0]?.raw_content||data.results?.[0]?.content||'').substring(0,4000)||null;}catch{return null;}}
-function detectIntent(msg){const urlMatch=msg.match(/https?:\/\/[^\s\u3000-\u9fff]+/);if(urlMatch)return{type:'url',url:urlMatch[0]};const kw=['調べて','検索して','最新','ニュース','今日の','何が起きて','について教えて','情報','build','mod','攻略'];if(kw.some(k=>msg.includes(k)))return{type:'search',query:msg};return{type:'chat'};}
-
-async function autoAnalyze(userMsg,reply){
-  if(!ck)return;
-  try{const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ck,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:'claude-haiku-4-5-20251001',max_tokens:300,messages:[{role:'user',content:`会話からおしん様の重要情報を抽出。JSONのみ:\n{"profile":[],"game":[],"work":[],"misc":[]}\nユーザー:「${userMsg}」\n返答:「${reply.substring(0,200)}」`}]})});if(!res.ok)return;const data=await res.json();const text=data.content?.[0]?.text||'';const jm=text.match(/\{[\s\S]*\}/);if(!jm)return;const parsed=JSON.parse(jm[0]);Object.entries(parsed).forEach(([cat,items])=>{if(Array.isArray(items))items.forEach(item=>{if(item&&item.trim())addMemWithCategory(item.trim(),cat);});});}catch{}
-}
-
-function setAI(a){ai=a;['auto','claude','openai'].forEach(x=>document.getElementById('tab-'+x).classList.toggle('active',x===a));}
-function decideAI(msg){if(ai!=='auto')return ai;if(!ok)return'claude';const kw=['chatgpt','gpt','openai','別の意見','両方'];if(kw.some(k=>msg.toLowerCase().includes(k)))return'openai';return'claude';}
-function autoResize(el){el.style.height='auto';el.style.height=Math.min(el.scrollHeight,120)+'px';}
-function onKey(e){if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}}
-function qs(t){document.getElementById('ui').value=t;send();}
-
-function newChat(){const id='s'+Date.now();const s={id,title:'新しい会話',messages:[],hist:[],projId:currentProjectId,created:Date.now()};sessions.unshift(s);saveSessions(sessions);currentSessionId=id;renderSessions();clearMessages();closeSidebar();}
-function loadSession(id){const s=sessions.find(x=>x.id===id);if(!s)return;currentSessionId=id;if(s.projId!==undefined&&s.projId!==currentProjectId){currentProjectId=s.projId;renderProjects();updateProjUI();}renderSessions();clearMessages();s.messages.forEach(m=>restoreMsg(m));closeSidebar();}
-function deleteSession(id){sessions=sessions.filter(x=>x.id!==id);saveSessions(sessions);if(currentSessionId===id){currentSessionId=null;clearMessages();}renderSessions();}
-function getCurrentSession(){return sessions.find(x=>x.id===currentSessionId);}
-function renderSessions(){const list=document.getElementById('sessionsList');list.innerHTML=sessions.length?sessions.map(s=>`<div class="session-item${s.id===currentSessionId?' active':''}" onclick="loadSession('${s.id}')"><div class="session-title">${s.title}</div><button class="session-del" onclick="event.stopPropagation();deleteSession('${s.id}')">✕</button></div>`).join(''):'<div style="padding:0.8rem 0.5rem;font-size:0.65rem;color:#333;text-align:center;">会話履歴なし</div>';}
-function clearMessages(){const msgs=document.getElementById('messages'),typing=document.getElementById('typing');msgs.innerHTML='';msgs.appendChild(typing);}
-function restoreMsg(m){const typing=document.getElementById('typing'),msgs=document.getElementById('messages');const wrap=document.createElement('div');wrap.className=`mwrap ${m.role}${m.aiType==='openai'?' gpt':''}`;const name=document.createElement('div');name.className='mname';name.textContent=m.role==='user'?'おしん様':m.aiType==='openai'?'GENIE / ChatGPT':'GENIE / Claude';wrap.appendChild(name);const bubble=document.createElement('div');bubble.className='mbubble';bubble.textContent=m.text;if(m.img){const img=document.createElement('img');img.src=m.img;bubble.appendChild(img);}wrap.appendChild(bubble);if(m.code)addCodeActions(wrap,m.code);msgs.insertBefore(wrap,typing);}
-function toggleSidebar(){const sb=document.getElementById('sidebar'),ov=document.getElementById('overlay');if(sb.classList.contains('open')){sb.classList.remove('open');ov.classList.remove('show');}else{sb.classList.add('open');ov.classList.add('show');}}
-function closeSidebar(){document.getElementById('sidebar').classList.remove('open');document.getElementById('overlay').classList.remove('show');}
-
-window.onload=()=>{
-  const sk=localStorage.getItem('ogck'),so=localStorage.getItem('ogok'),sg=localStorage.getItem('oggk'),st=localStorage.getItem('ogtk');
-  if(sk){ck=sk;ok=so||'';gk=sg||'';tk=st||'';showMain();}
-  document.getElementById('mi').addEventListener('keydown',e=>{if(e.key==='Enter')addMemMan();});
-  updateMemCount();sessions=getSessions();renderSessions();renderProjects();
+let state = {
+  hp: 100, hpMax: 100, mp: 50, mpMax: 50,
+  lv: 1, xp: 0, xpNext: 100, gold: 0,
+  skills: [], traits: [],
+  npcs: [], places: [], items: [], quests: [], events: [],
+  chars: [],
+  hero: '', world: '', apiKey: '',
+  history: [],     // {role, content} for context
+  lastAI: null,    // last AI message element for retry
+  lastUserMsg: '', // for retry
+  mode: 'Do',
+  busy: false,
+  gameStarted: false,
 };
-function saveKeys(){
-  const k=document.getElementById('ck').value.trim(),o=document.getElementById('ok').value.trim(),g=document.getElementById('gk').value.trim(),t=document.getElementById('tk').value.trim();
-  if(!k.startsWith('sk-ant-')){alert('AnthropicキーはSK-ant-で始まります');return;}
-  localStorage.setItem('ogck',k);if(o)localStorage.setItem('ogok',o);if(g)localStorage.setItem('oggk',g);if(t)localStorage.setItem('ogtk',t);
-  ck=k;ok=o;gk=g;tk=t;showMain();
-}
-function showMain(){document.getElementById('setup').style.display='none';document.getElementById('main').style.display='flex';if(!ok)document.getElementById('tab-openai').style.opacity='0.4';sessions=getSessions();renderSessions();renderProjects();}
 
-function openMem(){renderMems();document.getElementById('memoryModal').classList.add('show');}
-function closeMem(){document.getElementById('memoryModal').classList.remove('show');}
-function addMemMan(){const i=document.getElementById('mi');const t=i.value.trim();if(!t)return;addMemWithCategory(t,'misc');i.value='';renderMems();}
-function renderMems(){const l=document.getElementById('memList');const cats=[{key:'profile',label:'プロフィール'},{key:'game',label:'ゲーム情報'},{key:'work',label:'仕事・プロジェクト'},{key:'misc',label:'その他'}];let html='';cats.forEach(({key,label})=>{const mems=getMemsByCategory(key);if(mems.length){html+=`<div class="mem-section">— ${label} —</div>`;html+=mems.map((x,i)=>`<div class="memitem"><div class="memtext">${x.t}</div><div class="memmeta"><div class="memdate">${x.d}</div><button class="memdel" onclick="delMemCat('${key}',${i})">削除</button></div></div>`).join('');}});l.innerHTML=html||'<div class="emptymem">まだ記憶がありません。</div>';}
-function delMemCat(cat,idx){const m=getMemsByCategory(cat);m.splice(idx,1);saveMemsByCategory(cat,m);renderMems();}
-
-async function deployCode(code,appName){
-  if(!gk){alert('GitHubトークンが設定されていません');return;}
-  document.getElementById('deployModal').classList.add('show');
-  const status=document.getElementById('deployStatus'),bar=document.getElementById('deployBar');
-  const filename=`${(appName||'app').replace(/\s/g,'-')}-${Date.now()}.html`;
-  status.textContent='GitHubにアップロード中...';bar.style.width='30%';
-  try{
-    const content=btoa(unescape(encodeURIComponent(code)));
-    const res=await fetch(`https://api.github.com/repos/${GH_USER}/${GH_REPO}/contents/${filename}`,{method:'PUT',headers:{'Authorization':`token ${gk}`,'Content-Type':'application/json'},body:JSON.stringify({message:`Deploy ${filename}`,content})});
-    if(!res.ok){const e=await res.json();throw new Error(e.message||'Upload failed');}
-    bar.style.width='70%';status.textContent='公開処理中...';
-    await new Promise(r=>setTimeout(r,3000));
-    bar.style.width='100%';
-    const url=`https://${GH_USER}.github.io/${GH_REPO}/${filename}`;
-    status.innerHTML=`✅ デプロイ完了！\n\n${url}`;
-    const apps=getDeployedApps();apps.unshift({name:appName||filename,url,date:new Date().toLocaleDateString('ja-JP')});saveDeployedApps(apps);renderDeployedApps();
-  }catch(e){status.textContent=`❌ エラー: ${e.message}`;}
-}
-function deployCurrentCode(){if(prevCode)deployCode(prevCode,'app');}
-function openDeploy(){renderDeployedApps();document.getElementById('deployModal').classList.add('show');}
-function closeDeployModal(){document.getElementById('deployModal').classList.remove('show');}
-function renderDeployedApps(){const apps=getDeployedApps(),el=document.getElementById('deployedApps');if(!apps.length){el.innerHTML='<div style="color:#333;font-size:0.72rem;text-align:center;padding:1rem;">まだデプロイしたアプリはありません</div>';return;}el.innerHTML=apps.map(a=>`<div class="deployed-app-item"><div class="app-name">${a.name}</div><a href="${a.url}" target="_blank">${a.url}</a><div class="app-date">${a.date}</div></div>`).join('');}
-
-function addCodeActions(wrap,code){
-  const a=document.createElement('div');a.className='mactions';
-  const p=document.createElement('button');p.className='pbtn';p.textContent='プレビュー';p.onclick=()=>showPrev(code);
-  const dep=document.createElement('button');dep.className='deploy-btn';dep.textContent='🚀 デプロイ';dep.onclick=()=>deployCode(code,'app');
-  const d=document.createElement('button');d.className='dbtn';d.textContent='HTMLで保存';d.onclick=()=>dlCode(code);
-  a.appendChild(p);a.appendChild(dep);a.appendChild(d);wrap.appendChild(a);
+// ─── LOAD from localStorage ───────────────────────
+function loadStorage() {
+  const k = localStorage.getItem('chronicle_key') || '';
+  const ch = localStorage.getItem('chronicle_chars');
+  state.apiKey = k;
+  if (ch) try { state.chars = JSON.parse(ch); } catch(e) {}
 }
 
-function addMsg(text,role,code,aiType,imgSrc,save=true){
-  const typing=document.getElementById('typing'),msgs=document.getElementById('messages');
-  const wrap=document.createElement('div');wrap.className=`mwrap ${role}${aiType==='openai'?' gpt':''}`;
-  const name=document.createElement('div');name.className='mname';name.textContent=role==='user'?'おしん様':aiType==='openai'?'GENIE / ChatGPT':'GENIE / Claude';
-  wrap.appendChild(name);
-  const bubble=document.createElement('div');bubble.className='mbubble';bubble.textContent=text;
-  if(imgSrc){const img=document.createElement('img');img.src=imgSrc;bubble.appendChild(img);}
-  wrap.appendChild(bubble);
-  if(code)addCodeActions(wrap,code);
-  msgs.insertBefore(wrap,typing);msgs.scrollTop=msgs.scrollHeight;
-  if(save){let s=getCurrentSession();if(!s){newChat();s=getCurrentSession();}if(!s.messages)s.messages=[];s.messages.push({role,text,code,aiType,img:imgSrc});if(s.messages.length===1&&role==='user')s.title=text.substring(0,20)||(imgSrc?'画像の会話':'新しい会話');saveSessions(sessions);renderSessions();}
-}
+// ─── API CALL (NovelAI) ───────────────────────────
+async function callNovelAI(prompt) {
+  const key = state.apiKey;
+  if (!key) throw new Error('APIキーが設定されていません');
 
-async function send(){
-  const input=document.getElementById('ui'),btn=document.getElementById('sendBtn'),msg=input.value.trim();
-  if((!msg&&!imgs.length&&!attachedFiles.length)||loading)return;
-  if(!ck){alert('Anthropic APIキーが設定されていません。右上の🔑から追加してください。');return;}
-  if(!currentSessionId)newChat();
-  const curImgs=[...imgs],curFiles=[...attachedFiles];
-  input.value='';input.style.height='auto';imgs=[];attachedFiles=[];renderImgBar();renderFileBar();
-  loading=true;btn.disabled=true;
-  addMsg(msg,'user','',null,curImgs[0]||null);
-  const aiType=decideAI(msg);
-  const tlabel=document.getElementById('tlabel');
-  tlabel.textContent=aiType==='openai'?'GENIE / ChatGPT...':'GENIE / Claude...';
-  document.getElementById('typing').style.display='flex';
-  document.getElementById('messages').scrollTop=999999;
+  // Build parameters (NovelAI format)
+  const params = {
+    max_length: 150,
+    min_length: 1,
+    temperature: 1.05,
+    top_p: 0.95,
+    top_k: 85,
+    repetition_penalty: 1.05,
+    repetition_penalty_range: 2048,
+    repetition_penalty_slope: 0.09,
+    use_string: true,
+    order: [6, 0, 4, 5, 3, 1],
+  };
 
-  let extraContext='';
-  if(tk&&msg){
-    const intent=detectIntent(msg);
-    if(intent.type==='url'){tlabel.textContent='🌐 URL読み込み中...';const c=await fetchURL(intent.url);if(c){extraContext+=`\n\n【URL内容: ${intent.url}】\n${c}`;addMsg('🌐 URLを読み込みました','assistant','',null,null,false);}}
-    else if(intent.type==='search'){tlabel.textContent='🔍 Web検索中...';const r=await webSearch(msg);if(r){extraContext+=`\n\n【Web検索結果】\n${r}`;addMsg('🔍 Web検索完了','assistant','',null,null,false);}}
-    tlabel.textContent=aiType==='openai'?'GENIE / ChatGPT...':'GENIE / Claude...';
+  const body = {
+    input: prompt,
+    model: MODEL,
+    parameters: params,
+  };
+
+  const res = await fetch(PROXY, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + key,
+    },
+    body: JSON.stringify(body),
+  });
+
+  if (!res.ok) {
+    const errText = await res.text().catch(() => '');
+    throw new Error(`HTTP ${res.status}: ${errText.slice(0, 200)}`);
   }
-  curFiles.forEach(f=>{if(f.type==='text')extraContext+=`\n\n【添付: ${f.name}】\n${f.content}`;});
 
-  const sysPrompt=buildSystemPrompt();
-  const s=getCurrentSession(),hist=s?s.hist||[]:[];
+  const data = await res.json();
 
-  try{
-    let reply='';
-    const fullMsg=extraContext?`${msg}\n\n以下を参考に回答してください：${extraContext}`:msg;
-    if(aiType==='openai'&&ok){
-      const omsg=[{role:'system',content:sysPrompt},...hist,{role:'user',content:fullMsg}];
-      const res=await fetch('https://api.openai.com/v1/chat/completions',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+ok},body:JSON.stringify({model:MODEL_GPT,max_tokens:4000,messages:omsg})});
-      if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
-      const data=await res.json();reply=data.choices?.[0]?.message?.content||'';
-      hist.push({role:'user',content:msg},{role:'assistant',content:reply});
-    }else{
-      const content=[];
-      if(curImgs.length)curImgs.forEach(img=>content.push({type:'image',source:{type:'base64',media_type:'image/jpeg',data:img.split(',')[1]}}));
-      curFiles.forEach(f=>{if(f.type==='pdf')content.push({type:'document',source:{type:'base64',media_type:'application/pdf',data:f.base64}});});
-      content.push({type:'text',text:fullMsg||'ファイルを分析してください'});
-      const userContent=content.length===1&&!curImgs.length&&!curFiles.length?fullMsg:content;
-      const cmsg=[...hist,{role:'user',content:userContent}];
-      const res=await fetch('https://api.anthropic.com/v1/messages',{method:'POST',headers:{'Content-Type':'application/json','x-api-key':ck,'anthropic-version':'2023-06-01','anthropic-dangerous-direct-browser-access':'true'},body:JSON.stringify({model:MODEL_CLAUDE,max_tokens:4000,system:sysPrompt,messages:cmsg})});
-      if(!res.ok){const e=await res.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${res.status}`);}
-      const data=await res.json();reply=data.content?.map(b=>b.text||'').join('')||'';
-      hist.push({role:'user',content:msg||'[ファイル]'},{role:'assistant',content:reply});
-    }
-    if(s)s.hist=hist;saveSessions(sessions);
-    document.getElementById('typing').style.display='none';
-    const cm=reply.match(/```html\n?([\s\S]*?)```/);
-    const dt=reply.replace(/```html[\s\S]*?```/g,'').trim();
-    const code=cm?.[1]?.trim()||'';
-    addMsg(dt,'assistant',code,aiType,null);
-    if(code){prevCode=code;showPrev(code);}
-    if(msg)autoAnalyze(msg,reply);
-  }catch(e){document.getElementById('typing').style.display='none';addMsg(`申し訳ございません。エラーが発生いたしました。\n\n${e.message}`,'assistant','',aiType,null);}
-  loading=false;btn.disabled=false;
+  // NovelAI returns { output: "text" }
+  if (data.output !== undefined) return data.output.trim();
+
+  // fallback
+  if (data.text) return data.text.trim();
+  if (typeof data === 'string') return data.trim();
+
+  console.error('Unexpected NovelAI response:', data);
+  throw new Error('予期しないレスポンス形式: ' + JSON.stringify(data).slice(0, 200));
 }
 
-function showPrev(code){prevCode=code;document.getElementById('pf').srcdoc=code;document.getElementById('previewModal').classList.add('show');}
-function closePrev(){document.getElementById('previewModal').classList.remove('show');}
-function dlPreview(){dlCode(prevCode);}
-function dlCode(code){const b=new Blob([code],{type:'text/html'});const a=document.createElement('a');a.href=URL.createObjectURL(b);a.download='oshin_app.html';a.click();}
+// ─── BUILD PROMPT ─────────────────────────────────
+function buildPrompt(userAction) {
+  const heroText = state.hero || '名もなき冒険者';
+  const worldText = state.world || '剣と魔法の世界';
+
+  // Keep very short - Kayra works best with concise prompts
+  const aiHistory = state.history.filter(h => h.role === 'assistant').slice(-1);
+  const lastAI = aiHistory.length > 0 ? aiHistory[0].content : '';
+
+  let prompt = '';
+
+  if (!lastAI) {
+    // First generation
+    prompt = `これは${heroText}の物語だ。舞台は${worldText}。\n　`;
+  } else {
+    // Last story chunk, then user action as sentence start
+    // Trim to last 200 chars to stay within context
+    const trimmed = lastAI.length > 200 ? lastAI.slice(-200) : lastAI;
+    prompt = trimmed + '\n　';
+
+    if (userAction) {
+      // User action becomes start of next sentence - Kayra will complete it
+      prompt += userAction;
+      // If action doesn't end with verb form, add connector
+      if (!userAction.match(/[するたいくるれるぬ]$/)) {
+        prompt += 'すると、';
+      } else {
+        prompt += '、';
+      }
+    }
+  }
+
+  return prompt;
+}
+
+// ─── PARSE AI RESPONSE ────────────────────────────
+function parseResponse(text) {
+  // Extract JSON discoveries
+  const jsonMatch = text.match(/\|\|\|([\s\S]*?)\|\|\|/);
+  let discoveries = null;
+  let clean = text;
+
+  if (jsonMatch) {
+    clean = text.replace(/\|\|\|[\s\S]*?\|\|\|/, '').trim();
+    try {
+      discoveries = JSON.parse(jsonMatch[1]);
+    } catch(e) { /* ignore */ }
+  }
+
+  // Apply discoveries
+  if (discoveries) {
+    if (discoveries.skills) discoveries.skills.forEach(s => { if (s && !state.skills.includes(s)) state.skills.push(s); });
+    if (discoveries.npcs) discoveries.npcs.forEach(n => { if (n.name && !state.npcs.find(x => x.name === n.name)) state.npcs.push(n); });
+    if (discoveries.places) discoveries.places.forEach(p => { if (p && !state.places.includes(p)) state.places.push(p); });
+    if (discoveries.items) discoveries.items.forEach(i => { if (i && !state.items.includes(i)) state.items.push(i); });
+    if (discoveries.quests) discoveries.quests.forEach(q => { if (q && !state.quests.includes(q)) state.quests.push(q); });
+    if (discoveries.events) discoveries.events.forEach(e => { if (e && !state.events.includes(e)) state.events.push(e); });
+    renderMemory();
+    renderChar();
+  }
+
+  // Stats change heuristics
+  if (/戦闘|攻撃|傷|ダメージ/.test(clean)) state.hp = Math.max(1, state.hp - Math.floor(Math.random() * 15 + 3));
+  if (/魔法|呪文|発動/.test(clean)) state.mp = Math.max(0, state.mp - Math.floor(Math.random() * 8 + 2));
+  if (/勝利|倒し|撃破/.test(clean)) { state.xp += 15; state.gold += Math.floor(Math.random() * 20 + 5); }
+  if (/宝|金貨|報酬/.test(clean)) state.gold += Math.floor(Math.random() * 30 + 10);
+  if (state.xp >= state.xpNext) { state.lv++; state.xpNext = state.lv * 100; state.hpMax += 10; state.hp = state.hpMax; state.mpMax += 5; state.mp = state.mpMax; }
+  updateStats();
+
+  return clean;
+}
+
+// ─── RENDER ───────────────────────────────────────
+function addMsg(type, text, badge) {
+  const area = document.getElementById('storyArea');
+  const div = document.createElement('div');
+  div.className = 'msg';
+
+  if (type === 'narr') {
+    div.className += ' msg-narr';
+    div.textContent = text;
+    div.addEventListener('dblclick', () => {
+      div.contentEditable = div.contentEditable === 'true' ? 'false' : 'true';
+      if (div.contentEditable === 'true') div.focus();
+    });
+    state.lastAI = div;
+    area.appendChild(div);
+    // Update history
+    state.history.push({ role: 'assistant', content: text });
+  } else if (type === 'player') {
+    div.className += ' msg-player';
+    const b = badge ? `<span class="msg-badge">${badge}</span>` : '';
+    div.innerHTML = b + text;
+    area.appendChild(div);
+  } else if (type === 'divider') {
+    const hr = document.createElement('hr');
+    hr.className = 'divider';
+    area.appendChild(hr);
+    return;
+  }
+
+  area.scrollTop = area.scrollHeight;
+  return div;
+}
+
+function addThinking() {
+  const area = document.getElementById('storyArea');
+  const div = document.createElement('div');
+  div.className = 'msg msg-thinking';
+  div.id = 'thinkingMsg';
+  div.textContent = '語り手が言葉を紡いでいる…';
+  area.appendChild(div);
+  area.scrollTop = area.scrollHeight;
+}
+
+function removeThinking() {
+  const el = document.getElementById('thinkingMsg');
+  if (el) el.remove();
+}
+
+function updateStats() {
+  document.getElementById('hpBar').style.width = (state.hp / state.hpMax * 100) + '%';
+  document.getElementById('hpVal').textContent = state.hp + '/' + state.hpMax;
+  document.getElementById('mpBar').style.width = (state.mp / state.mpMax * 100) + '%';
+  document.getElementById('mpVal').textContent = state.mp + '/' + state.mpMax;
+  document.getElementById('xpBar').style.width = Math.min(100, state.xp / state.xpNext * 100) + '%';
+  document.getElementById('lvVal').textContent = state.lv;
+  document.getElementById('goldVal').textContent = state.gold;
+}
+
+function renderChar() {
+  const sl = document.getElementById('skillsList');
+  sl.innerHTML = state.skills.length ? state.skills.map(s => `<span class="tag">${s}</span>`).join('') : '<span class="empty-note">まだ発見されていない</span>';
+  const tl = document.getElementById('traitsList');
+  tl.innerHTML = state.traits.length ? state.traits.map(t => `<span class="tag">${t}</span>`).join('') : '<span class="empty-note">—</span>';
+}
+
+function renderMemory() {
+  const npcEl = document.getElementById('npcList');
+  npcEl.innerHTML = state.npcs.length ? state.npcs.map(n =>
+    `<div class="npc-item"><div class="npc-name">${n.name}</div><div class="npc-role">${n.role || ''}</div><div class="npc-desc">${n.desc || ''}</div></div>`
+  ).join('') : '<span class="empty-note">誰とも会っていない</span>';
+
+  const plEl = document.getElementById('placesList');
+  plEl.innerHTML = state.places.length ? state.places.map(p => `<span class="tag">${p}</span>`).join('') : '<span class="empty-note">未探索</span>';
+
+  const itEl = document.getElementById('itemsList');
+  itEl.innerHTML = state.items.length ? state.items.map(i => `<span class="tag">${i}</span>`).join('') : '<span class="empty-note">何も持っていない</span>';
+
+  const qtEl = document.getElementById('questsList');
+  qtEl.innerHTML = state.quests.length ? state.quests.map(q => `<div style="font-size:0.83rem;color:var(--text2);margin-bottom:0.2rem">• ${q}</div>`).join('') : '<span class="empty-note">なし</span>';
+
+  const evEl = document.getElementById('eventsList');
+  evEl.innerHTML = state.events.length ? state.events.map(e => `<div style="font-size:0.8rem;color:var(--text3);margin-bottom:0.2rem">◆ ${e}</div>`).join('') : '<span class="empty-note">何もない</span>';
+}
+
+function renderSlots() {
+  const el = document.getElementById('slotList');
+  if (!state.chars.length) { el.innerHTML = '<span class="empty-note" style="font-size:0.82rem">キャラクターなし</span>'; return; }
+  el.innerHTML = state.chars.map((c, i) =>
+    `<div class="slot-card" onclick="editSlot(${i})">
+      <div class="slot-avatar">${c.avatar || '👤'}</div>
+      <div class="slot-info"><div class="slot-name">${c.name || '名前なし'}</div><div class="slot-role">${c.role || ''}</div></div>
+      <button class="slot-del" onclick="event.stopPropagation();deleteSlot(${i})">✕</button>
+    </div>`
+  ).join('');
+}
+
+// ─── SUGGESTIONS ──────────────────────────────────
+async function genSuggestions() {
+  const suggRow = document.getElementById('suggRow');
+  suggRow.innerHTML = '';
+  if (!state.gameStarted || state.history.length < 2) return;
+  try {
+    const prompt = buildPrompt('') + `\n次のプレイヤー行動として自然な短いアクション提案を3つだけJSON配列で出力してください。例: ["〜する","〜と言う","〜を調べる"]\nJSONのみ、他のテキストなし:`;
+    const raw = await callNovelAI(prompt);
+    const match = raw.match(/\[[\s\S]*?\]/);
+    if (!match) return;
+    const suggs = JSON.parse(match[0]);
+    if (!Array.isArray(suggs)) return;
+    suggs.slice(0, 4).forEach(s => {
+      const btn = document.createElement('button');
+      btn.className = 'sugg-btn';
+      btn.textContent = s;
+      btn.onclick = () => { document.getElementById('actionInput').value = s; pickMode('Do'); };
+      suggRow.appendChild(btn);
+    });
+  } catch(e) { /* silently fail */ }
+}
+
+// ─── GAME FLOW ────────────────────────────────────
+async function startGame() {
+  const hero = document.getElementById('heroInput').value.trim();
+  const world = document.getElementById('worldInput').value.trim();
+  const key = document.getElementById('apiKeyInput').value.trim();
+
+  if (!key) { alert('APIキーを入力してください'); return; }
+
+  state.hero = hero || 'プレイヤーキャラクター';
+  state.world = world;
+  state.apiKey = key;
+  localStorage.setItem('chronicle_key', key);
+
+  document.getElementById('startScreen').style.display = 'none';
+  document.getElementById('gameScreen').style.display = 'flex';
+
+  setAllBusy(true);
+  addThinking();
+  try {
+    const heroText = state.hero || '名もなき冒険者';
+    const worldText = state.world || '剣と魔法の世界';
+    const prompt = `${worldText}を舞台に、${heroText}の物語が始まる。\n　`;
+    const raw = await callNovelAI(prompt);
+    removeThinking();
+    const clean = parseResponse(raw);
+    addMsg('narr', clean);
+    addMsg('divider', '');
+    state.gameStarted = true;
+    enablePostGame();
+    genSuggestions();
+  } catch(e) {
+    removeThinking();
+    addMsg('narr', 'エラーが発生しました: ' + e.message);
+  }
+  setAllBusy(false);
+}
+
+async function send() {
+  const input = document.getElementById('actionInput');
+  const text = input.value.trim();
+  if (!text || state.busy) return;
+
+  const modeLabel = state.mode;
+  let actionText = text;
+  if (modeLabel === 'Say') actionText = `「${text}」と言う`;
+  else if (modeLabel === 'Story') actionText = text;
+  else if (modeLabel === 'See') actionText = `${text}を見回す`;
+
+  state.lastUserMsg = actionText;
+  state.history.push({ role: 'user', content: actionText });
+
+  input.value = '';
+  addMsg('player', text, modeLabel);
+
+  setAllBusy(true);
+  addThinking();
+  try {
+    const prompt = buildPrompt(null); // user msg already in history
+    const raw = await callNovelAI(prompt);
+    removeThinking();
+    const clean = parseResponse(raw);
+    addMsg('narr', clean);
+    addMsg('divider', '');
+    enablePostGame();
+    genSuggestions();
+  } catch(e) {
+    removeThinking();
+    addMsg('narr', 'エラー: ' + e.message);
+  }
+  setAllBusy(false);
+  closeModeBar();
+}
+
+async function doContinue() {
+  if (state.busy) return;
+  state.history.push({ role: 'user', content: '(続けて)' });
+  setAllBusy(true);
+  addThinking();
+  try {
+    const prompt = buildPrompt(null);
+    const raw = await callNovelAI(prompt);
+    removeThinking();
+    const clean = parseResponse(raw);
+    addMsg('narr', clean);
+    addMsg('divider', '');
+    genSuggestions();
+  } catch(e) {
+    removeThinking();
+    addMsg('narr', 'エラー: ' + e.message);
+  }
+  setAllBusy(false);
+}
+
+async function doRetry() {
+  if (state.busy || !state.lastAI) return;
+  // Remove last AI message and its history entry
+  state.lastAI.remove();
+  // Remove last assistant entry from history
+  for (let i = state.history.length - 1; i >= 0; i--) {
+    if (state.history[i].role === 'assistant') { state.history.splice(i, 1); break; }
+  }
+  setAllBusy(true);
+  addThinking();
+  try {
+    const prompt = buildPrompt(null);
+    const raw = await callNovelAI(prompt);
+    removeThinking();
+    const clean = parseResponse(raw);
+    addMsg('narr', clean);
+    addMsg('divider', '');
+    genSuggestions();
+  } catch(e) {
+    removeThinking();
+    addMsg('narr', 'エラー: ' + e.message);
+  }
+  setAllBusy(false);
+}
+
+// ─── UI HELPERS ───────────────────────────────────
+function setAllBusy(v) {
+  state.busy = v;
+  document.getElementById('sendBtn').disabled = v;
+  document.getElementById('continueBtn').disabled = v || !state.gameStarted;
+  document.getElementById('retryBtn').disabled = v || !state.gameStarted;
+  document.getElementById('takeTurnBtn').disabled = v;
+}
+
+function enablePostGame() {
+  document.getElementById('continueBtn').disabled = false;
+  document.getElementById('retryBtn').disabled = false;
+}
+
+function toggleModeBar() {
+  if (state.busy) return;
+  const bar = document.getElementById('modeBar');
+  const textRow = document.getElementById('textRow');
+  if (bar.classList.contains('open')) {
+    bar.classList.remove('open');
+    textRow.classList.remove('open');
+  } else {
+    bar.classList.add('open');
+    document.getElementById('takeTurnBtn').classList.add('active');
+  }
+}
+
+function closeModeBar() {
+  document.getElementById('modeBar').classList.remove('open');
+  document.getElementById('textRow').classList.remove('open');
+  document.getElementById('takeTurnBtn').classList.remove('active');
+}
+
+function pickMode(mode) {
+  state.mode = mode;
+  document.querySelectorAll('.mode-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('mode' + mode + 'Btn').classList.add('active');
+  document.getElementById('modeIndicator').textContent = mode.toUpperCase();
+  const textRow = document.getElementById('textRow');
+  textRow.classList.add('open');
+  const placeholders = { Do: '行動を入力…', Say: 'セリフを入力…', Story: '物語として語る…', See: '何を見る・観察する…' };
+  document.getElementById('actionInput').placeholder = placeholders[mode] || '';
+  document.getElementById('actionInput').focus();
+}
+
+function togglePanel(id) {
+  const el = document.getElementById(id);
+  const other = id === 'charPanel' ? 'memPanel' : 'charPanel';
+  document.getElementById(other).classList.remove('open');
+  el.classList.toggle('open');
+}
+
+function toggleSettings() {
+  const p = document.getElementById('settingsPanel');
+  const ov = document.getElementById('overlay');
+  const isOpen = p.classList.contains('open');
+  if (!isOpen) {
+    renderSlots();
+    const savedKey = localStorage.getItem('chronicle_key') || '';
+    document.getElementById('settingsApiKey').value = savedKey;
+    document.getElementById('settingsWorld').value = state.world;
+  }
+  p.classList.toggle('open');
+  ov.classList.toggle('open');
+}
+
+function toggleApiVis() {
+  const inp = document.getElementById('apiKeyInput');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+function toggleSettingsApiVis() {
+  const inp = document.getElementById('settingsApiKey');
+  inp.type = inp.type === 'password' ? 'text' : 'password';
+}
+
+// ─── START SCREEN VALIDATION ──────────────────────
+document.getElementById('apiKeyInput').addEventListener('input', function() {
+  const v = this.value.trim();
+  document.getElementById('enterBtn').disabled = v.length < 8;
+});
+
+// ─── CHAR SLOTS ───────────────────────────────────
+let editingSlotIndex = null;
+
+function addSlot() {
+  editingSlotIndex = null;
+  clearEditForm();
+  document.getElementById('charEditForm').classList.add('open');
+  buildAvatarRow(null);
+}
+
+function editSlot(i) {
+  editingSlotIndex = i;
+  const c = state.chars[i];
+  document.getElementById('editName').value = c.name || '';
+  document.getElementById('editRole').value = c.role || '';
+  document.getElementById('editDesc').value = c.desc || '';
+  buildAvatarRow(c.avatar);
+  document.getElementById('charEditForm').classList.add('open');
+}
+
+function deleteSlot(i) {
+  state.chars.splice(i, 1);
+  saveChars();
+  renderSlots();
+}
+
+function saveSlot() {
+  const name = document.getElementById('editName').value.trim();
+  const role = document.getElementById('editRole').value.trim();
+  const desc = document.getElementById('editDesc').value.trim();
+  const selAvatar = document.querySelector('.avatar-opt.sel');
+  const avatar = selAvatar ? selAvatar.textContent : '👤';
+  const entry = { name, role, desc, avatar };
+  if (editingSlotIndex !== null) state.chars[editingSlotIndex] = entry;
+  else state.chars.push(entry);
+  saveChars();
+  renderSlots();
+  document.getElementById('charEditForm').classList.remove('open');
+  clearEditForm();
+}
+
+function cancelEdit() {
+  document.getElementById('charEditForm').classList.remove('open');
+  clearEditForm();
+}
+
+function clearEditForm() {
+  ['editName','editRole','editDesc'].forEach(id => document.getElementById(id).value = '');
+}
+
+function buildAvatarRow(sel) {
+  const row = document.getElementById('avatarRow');
+  row.innerHTML = AVATARS.map(a =>
+    `<span class="avatar-opt${sel === a ? ' sel' : ''}" onclick="selectAvatar(this)">${a}</span>`
+  ).join('');
+}
+
+function selectAvatar(el) {
+  document.querySelectorAll('.avatar-opt').forEach(e => e.classList.remove('sel'));
+  el.classList.add('sel');
+}
+
+function saveChars() {
+  localStorage.setItem('chronicle_chars', JSON.stringify(state.chars));
+}
+
+function saveApiKey() {
+  const k = document.getElementById('settingsApiKey').value.trim();
+  if (!k) return;
+  state.apiKey = k;
+  localStorage.setItem('chronicle_key', k);
+  alert('APIキーを保存しました');
+}
+
+function saveWorld() {
+  state.world = document.getElementById('settingsWorld').value.trim();
+  alert('世界設定を更新しました');
+}
+
+// ─── INIT ─────────────────────────────────────────
+loadStorage();
+// Pre-fill API key if saved
+const savedKey = localStorage.getItem('chronicle_key') || '';
+if (savedKey) {
+  document.getElementById('apiKeyInput').value = savedKey;
+  document.getElementById('enterBtn').disabled = false;
+}
+updateStats();
+renderChar();
+renderMemory();
 </script>
 </body>
 </html>
